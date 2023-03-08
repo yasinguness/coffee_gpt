@@ -70,17 +70,7 @@ class _CoffeeListViewState extends State<CoffeeListView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 70,
-                          child: _coffeNameBuilder(value),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        _animatedPriceText(value, context),
-                        ..._buildOverlays()
-                      ],
+                      children: [_coffeNameBuilder(value), ..._buildOverlays()],
                     ),
                   )
                 ],
@@ -127,37 +117,48 @@ class _CoffeeListViewState extends State<CoffeeListView> {
     ));
   }
 
-  PageView _coffeNameBuilder(CoffeListViewModel value) {
-    return PageView.builder(
-      controller: _headingController,
-      itemCount: value.coffees!.length,
-      scrollDirection: Axis.horizontal,
-      itemBuilder: (context, index) {
-        value.index = index;
-        /* if (index == value.coffees!.length) {
-          return const SizedBox.shrink();
-        } */
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 80),
-          child: Center(
-            child: Hero(
-                tag: "name2${value.coffees![index].id.toString()}",
-                child: Text(
-                  value.coffees![index].name.toString(),
-                  style: Theme.of(context).textTheme.headline1,
-                  textAlign: TextAlign.center,
-                )),
-          ),
-        );
-      },
+  SizedBox _coffeNameBuilder(CoffeListViewModel value) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.1,
+      child: PageView.builder(
+        controller: _headingController,
+        itemCount: value.coffees!.length + 1,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          value.index = index;
+          if (index == value.coffees!.length) {
+            return const SizedBox.shrink();
+          }
+          return Column(
+            children: [
+              Expanded(
+                child: _name(value, index, context),
+              ),
+              Expanded(
+                child: _price(value, index, context),
+              )
+            ],
+          );
+        },
+      ),
     );
   }
 
-  AnimatedSwitcher _animatedPriceText(CoffeListViewModel value, BuildContext context) {
+  Hero _name(CoffeListViewModel value, int index, BuildContext context) {
+    return Hero(
+        tag: "name2${value.coffees![index].id.toString()}",
+        child: Text(
+          value.coffees![index].name.toString(),
+          style: Theme.of(context).textTheme.headline1,
+          textAlign: TextAlign.center,
+        ));
+  }
+
+  AnimatedSwitcher _price(CoffeListViewModel value, int index, BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: Text(
-        "${value.coffees![value.index!].mediumPrice} TL",
+        "${value.coffees![index].mediumPrice} TL",
         style: Theme.of(context).textTheme.headline2!.copyWith(fontWeight: FontWeight.w500, fontSize: 26),
       ),
     );
@@ -179,7 +180,14 @@ class _CoffeeListViewState extends State<CoffeeListView> {
           }
           /* if (index == value.coffees!.length) {
             return Container(
-              color: Colors.transparent,
+              color: Colors.red,
+            );
+          } */
+          /*  if (index == value.coffees!.length) {
+            return Container(
+              width: 50,
+              height: 50,
+              color: Colors.red,
               child: Column(
                 children: [
                   const Text("Hangi kahveyi içeceğine karar veremiyormusun ? Hemen tıkla !"),
