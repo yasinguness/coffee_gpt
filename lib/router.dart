@@ -1,6 +1,6 @@
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/network/models/coffee.dart';
-import 'package:coffe_app/ui/checkout/checkout_view.dart';
+import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
 import 'package:coffe_app/ui/coffe_detail/view/coffee_detail_view.dart';
 import 'package:coffe_app/ui/coffee_list/view/coffe_list_view.dart';
 import 'package:coffe_app/ui/home/view/home_view.dart';

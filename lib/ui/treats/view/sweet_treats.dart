@@ -1,7 +1,7 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/network/models/coffee.dart';
-import 'package:coffe_app/ui/checkout/checkout_view.dart';
+import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
 import 'package:coffe_app/ui/treats/view/treats_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
