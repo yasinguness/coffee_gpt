@@ -55,7 +55,7 @@ class _CoffeeListViewState extends State<CoffeeListView> {
   Widget build(BuildContext context) {
     return BaseView<CoffeListViewModel>(
       onModelReady: (p0) => p0.fetchCoffees(),
-      model: CoffeListViewModel(api: Provider.of(context)),
+      model: CoffeListViewModel(coffeeServices: Provider.of(context)),
       builder: (context, value, widget) => value.busy
           ? const Center(child: CircularProgressIndicator())
           : Scaffold(

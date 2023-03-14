@@ -1,16 +1,16 @@
 import 'package:coffe_app/network/models/coffee.dart';
-import 'package:coffe_app/network/services/api.dart';
+import 'package:coffe_app/network/services/coffee/coffee_services.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 
 class CoffeListViewModel extends BaseModel {
-  final Api? api;
-  CoffeListViewModel({this.api});
+  final CoffeeServices? coffeeServices;
+  CoffeListViewModel({this.coffeeServices});
   int? index = 0;
 
   List<Coffee>? coffees;
   Future fetchCoffees() async {
     setBusy(true);
-    coffees = await api!.getCoffeeList();
+    coffees = await coffeeServices!.getCoffeeList();
     setBusy(false);
   }
 }

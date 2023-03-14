@@ -17,10 +17,16 @@ class CoffeeDetailView extends StatefulWidget {
 
 class _CoffeeDetailViewState extends State<CoffeeDetailView> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return BaseView<CoffeeDetailModel>(
-        onModelReady: (p0) => p0.getCoffee(widget.coffee!.id!),
+    return BaseView<CoffeeDetailViewModel>(
+        onModelReady: (p0) => p0.getCoffee(widget.coffee!.id!, widget.coffee!.coffeeSize!),
         builder: (context, value, widget) => value.busy
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -40,7 +46,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
                           children: [
                             SizedBox(
                               width: double.infinity,
-                              child: _coffeeButton(context),
+                              child: _coffeeButton(context, value),
                             ),
                             const SizedBox(
                               height: 100,
@@ -71,7 +77,8 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
                   ],
                 ),
               ),
-        model: CoffeeDetailModel(api: Provider.of(context)));
+        //  onModelReady: (p0) => p0.getCoffee(widget.coffee!.id!),
+        model: CoffeeDetailViewModel(coffeeServices: Provider.of(context)));
   }
 
   AppBar _appBar(BuildContext context) {
@@ -99,7 +106,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
     );
   }
 
-  ElevatedButton _coffeeButton(BuildContext context) {
+  ElevatedButton _coffeeButton(BuildContext context, CoffeeDetailViewModel value) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,
@@ -110,7 +117,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
           ),
         ),
         onPressed: () {
-          Navigator.pushNamed(context, RouteConst.sweetTreatsView, arguments: widget.coffee);
+          Navigator.pushNamed(context, RouteConst.sweetTreatsView, arguments: value.coffee);
         },
         child: _elevatedButtonText(context));
   }
@@ -133,7 +140,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
     );
   }
 
-  Row _coffeeIconsAndSize(BuildContext context, CoffeeDetailModel model) {
+  Row _coffeeIconsAndSize(BuildContext context, CoffeeDetailViewModel model) {
     return Row(
       children: [
         const Icon(
@@ -145,9 +152,9 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
           width: 5,
         ),
         Text(
-          model.sizeCoffee == 'M'
+          model.coffee?.coffeeSize == 'M'
               ? "Medium"
-              : model.sizeCoffee == 'L'
+              : model.coffee?.coffeeSize == 'L'
                   ? "Large"
                   : "Small",
           style: Theme.of(context)
@@ -159,24 +166,22 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
     );
   }
 
-  Row _coffeSizeChoiceList(BuildContext context, CoffeeDetailModel model) {
+  Row _coffeSizeChoiceList(BuildContext context, CoffeeDetailViewModel model) {
     return Row(
       children: ['S', 'M', 'L']
           .map((sizeCoffe) => GestureDetector(
                 onTap: () {
-                  model.updateCoffeeSize(sizeCoffe);
-                  print(model.sizeCoffee);
-                  print("${model.isMedium}+ :medium");
-                  print(model.isSmall);
+                  model.getCoffee(
+                      model.coffee!.id!, sizeCoffe); // Kahvelerin hangi boyuttda olduğuna göre fiyatı belirtiyor.
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: model.sizeCoffee == sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
+                    color: model.coffee?.coffeeSize == sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
                     border: Border.all(
-                      color: model.sizeCoffee != sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
+                      color: model.coffee?.coffeeSize != sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
                       width: 2,
                     ),
                   ),
@@ -187,24 +192,25 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
     );
   }
 
-  AnimatedDefaultTextStyle _animatedTextCoffeeSize(BuildContext context, CoffeeDetailModel model, String sizeCoffe) {
+  AnimatedDefaultTextStyle _animatedTextCoffeeSize(
+      BuildContext context, CoffeeDetailViewModel model, String sizeCoffe) {
     return AnimatedDefaultTextStyle(
       duration: const Duration(milliseconds: 300),
       style: Theme.of(context).textTheme.subtitle1!.copyWith(
           fontSize: 18,
           fontWeight: FontWeight.w400,
-          color: model.sizeCoffee != sizeCoffe ? CoffeeColors.kTitleColor : Colors.white),
+          color: model.coffee?.coffeeSize != sizeCoffe ? CoffeeColors.kTitleColor : Colors.white),
       child: Text(
         sizeCoffe,
       ),
     );
   }
 
-  Align _alignPrice(BuildContext context, CoffeeDetailModel model) {
+  Align _alignPrice(BuildContext context, CoffeeDetailViewModel model) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        "${model.sizeCoffee == 'M' ? widget.coffee!.mediumPrice : model.sizeCoffee == 'L' ? widget.coffee!.largePrice : widget.coffee!.smallPrice}",
+        "${model.coffee?.coffeeSize == 'M' ? widget.coffee?.mediumPrice : model.coffee?.coffeeSize == 'L' ? widget.coffee?.largePrice : widget.coffee!.smallPrice}",
         style: Theme.of(context).textTheme.headline1,
       ),
     );
@@ -238,7 +244,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
     );
   }
 
-  Positioned _positionedImage(Size size, CoffeeDetailModel model) {
+  Positioned _positionedImage(Size size, CoffeeDetailViewModel model) {
     return Positioned(
       left: size.width * 0.38,
       bottom: -size.height * 0.15,
@@ -250,9 +256,9 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
           tag: "name${widget.coffee!.id!.toString()}",
           child: AnimatedScale(
             duration: const Duration(milliseconds: 400),
-            scale: model.sizeCoffee == 'M'
+            scale: model.coffee?.coffeeSize == 'M'
                 ? 1.36
-                : model.sizeCoffee == 'L'
+                : model.coffee?.coffeeSize == 'L'
                     ? 1.5
                     : 1.2,
             curve: Curves.easeOutBack,

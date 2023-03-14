@@ -7,11 +7,20 @@ class Coffee {
   String? name;
   String? description;
   String? image;
+  String? coffeeSize;
   double? smallPrice;
   double? mediumPrice;
   double? largePrice;
 
-  Coffee({this.id, this.name, this.description, this.image, this.smallPrice, this.largePrice, this.mediumPrice});
+  Coffee(
+      {this.id,
+      this.name,
+      this.description,
+      this.image,
+      this.smallPrice,
+      this.largePrice,
+      this.mediumPrice,
+      this.coffeeSize});
 
   factory Coffee.fromJson(Map<String, dynamic> json) => _$CoffeeFromJson(json);
   Map<dynamic, dynamic> toJson() => _$CoffeeToJson(this);

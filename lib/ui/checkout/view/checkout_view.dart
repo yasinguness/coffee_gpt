@@ -23,9 +23,6 @@ class _CheckoutViewState extends State<CheckoutView> {
   void initState() {
     // TODO: implement initState
     order = Order();
-    order.image = widget.coffee!.image;
-    order.totalCoffePrice = widget.coffee!.mediumPrice;
-    order.totalTreatPrice = 12;
   }
 
   @override
@@ -34,80 +31,99 @@ class _CheckoutViewState extends State<CheckoutView> {
 
     return BaseView<CheckoutViewModel>(
       builder: (context, value, wtg) {
-        return Scaffold(
-          appBar: _appBar(context),
-          body: Stack(
-            alignment: Alignment.center,
-            children: [
-              _buildBackground(),
-              Hero(
-                  tag: "nameCoffee", //CoffeImageTag
-                  child: Image.asset(
-                    "assets/coffee/GLASS-2.png",
-                    fit: BoxFit.contain,
-                  )),
-              if (widget.treat != null)
-                Align(
-                  alignment: const Alignment(2, 0.5),
-                  child: SizedBox(
-                    width: size.width * 0.8,
-                    child: Image.asset(
-                      "assets/treat/TREAT_0.png",
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        "My Order",
-                        style: Theme.of(context).textTheme.headline1,
-                      ),
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _coffeName(context),
-                          Text(
-                            "Price",
-                            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                fontSize: 18,
-                                letterSpacing: 1,
-                                fontWeight: FontWeight.w600,
-                                color: CoffeeColors.kTitleColor.withOpacity(.8)),
-                          )
-                        ],
-                      ),
-                      if (widget.treat != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _treatName(context),
-                              _treatText(context),
-                            ],
-                          ),
+        return value.busy
+            ? const Center(child: CircularProgressIndicator())
+            : Scaffold(
+                appBar: _appBar(context),
+                body: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _buildBackground(),
+                    _coffeImage(),
+                    if (widget.treat != null) _treatImage(size),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(25),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _myOrderText(context),
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            _coffeeRow(context, value),
+                            if (widget.treat != null) _treatRow(context),
+                            const Spacer(),
+                            _checkoutButton(value, order)
+                            /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
+                          ],
                         ),
-                      const Spacer(),
-                      _checkoutButton(value)
-                      /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        );
+              );
       },
-      model: CheckoutViewModel(api: Provider.of(context)),
+      model: CheckoutViewModel(orderServices: Provider.of(context), coffee: widget.coffee!),
+      onModelReady: (p0) => p0.getCoffeePrice(),
+    );
+  }
+
+  Row _coffeeRow(BuildContext context, CheckoutViewModel model) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [_coffeName(context), _coffePrice(model, context)],
+    );
+  }
+
+  Padding _treatRow(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _treatName(context),
+          _treatText(context),
+        ],
+      ),
+    );
+  }
+
+  Text _myOrderText(BuildContext context) {
+    return Text(
+      "My Order",
+      style: Theme.of(context).textTheme.headline1,
+    );
+  }
+
+  Hero _coffeImage() {
+    return Hero(
+        tag: "nameCoffee", //CoffeImageTag
+        child: Image.asset(
+          "assets/coffee/GLASS-2.png",
+          fit: BoxFit.contain,
+        ));
+  }
+
+  Align _treatImage(Size size) {
+    return Align(
+      alignment: const Alignment(2, 0.5),
+      child: SizedBox(
+        width: size.width * 0.8,
+        child: Image.asset(
+          "assets/treat/TREAT_0.png",
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
+  }
+
+  Text _coffePrice(CheckoutViewModel model, BuildContext context) {
+    return Text(
+      "${model.price}",
+      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+          fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w600, color: CoffeeColors.kTitleColor.withOpacity(.8)),
     );
   }
 
@@ -141,7 +157,7 @@ class _CheckoutViewState extends State<CheckoutView> {
             color: CoffeeColors.kTitleColor.withOpacity(.8)));
   }
 
-  ElevatedButton _checkoutButton(CheckoutViewModel model) {
+  ElevatedButton _checkoutButton(CheckoutViewModel model, Order order) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,

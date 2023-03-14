@@ -93,7 +93,7 @@ class _TreatsListViewState extends State<TreatsListView> {
                 ],
               ),
         onModelReady: (p0) => p0.fetchTreats(),
-        model: TreatsViewModel(api: Provider.of(context))); //TODO:Neden provider of context yapıyoruz.
+        model: TreatsViewModel(treatService: Provider.of(context))); //TODO:Neden provider of context yapıyoruz.
   }
 
   Align _treatsPrice(BuildContext context, TreatsViewModel treat) {
