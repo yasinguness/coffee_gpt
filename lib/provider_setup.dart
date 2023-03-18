@@ -1,3 +1,4 @@
+import 'package:coffe_app/network/services/chat_gpt/chat_gpt_service.dart';
 import 'package:coffe_app/network/services/coffee/coffee_services.dart';
 import 'package:coffe_app/network/services/order/order_service.dart';
 import 'package:coffe_app/network/services/treat/treat_service.dart';
@@ -14,6 +15,9 @@ List<SingleChildWidget> independentServices = [
   ),
   Provider<TreatService>(
     create: (context) => TreatService(),
+  ),
+  Provider<ChatGptServices>(
+    create: (context) => ChatGptServices(),
   ),
 /*   ListenableProvider<CheckoutViewModel>(
     create: (context) => CheckoutViewModel(coffee: Coffee()),

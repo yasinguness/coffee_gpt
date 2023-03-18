@@ -1,4 +1,5 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
+import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/network/models/order.dart';
 import 'package:coffe_app/network/models/treat.dart';
@@ -34,7 +35,7 @@ class _CheckoutViewState extends State<CheckoutView> {
         return value.busy
             ? const Center(child: CircularProgressIndicator())
             : Scaffold(
-                appBar: _appBar(context),
+                appBar: const CustomAppBar(),
                 body: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -65,7 +66,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                 ),
               );
       },
-      model: CheckoutViewModel(orderServices: Provider.of(context), coffee: widget.coffee!),
+      model: CheckoutViewModel(orderServices: Provider.of(context), coffee: widget.coffee!, treat: widget.treat),
       onModelReady: (p0) => p0.getCoffeePrice(),
     );
   }
@@ -157,7 +158,10 @@ class _CheckoutViewState extends State<CheckoutView> {
             color: CoffeeColors.kTitleColor.withOpacity(.8)));
   }
 
-  ElevatedButton _checkoutButton(CheckoutViewModel model, Order order) {
+  ElevatedButton _checkoutButton(
+    CheckoutViewModel model,
+    Order order,
+  ) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,

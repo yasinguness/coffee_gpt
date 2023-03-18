@@ -2,6 +2,7 @@ import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
 import 'package:coffe_app/ui/coffe_detail/view/coffee_detail_view.dart';
+import 'package:coffe_app/ui/coffeeGpt/view/chat_screen.dart';
 import 'package:coffe_app/ui/coffee_list/view/coffe_list_view.dart';
 import 'package:coffe_app/ui/home/view/home_view.dart';
 import 'package:coffe_app/ui/Intro/view/intro_view.dart';
@@ -23,6 +24,10 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
     case RouteConst.coffeeListView:
       return MaterialPageRoute(
         builder: (context) => const CoffeeListView(),
+      );
+    case RouteConst.helperPage:
+      return MaterialPageRoute(
+        builder: (context) => const ChatScreenView(),
       );
 
     case RouteConst.coffeeDetailView:

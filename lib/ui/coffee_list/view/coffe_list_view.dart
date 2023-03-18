@@ -1,7 +1,9 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/scrool.dart';
+import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
+import 'package:coffe_app/ui/coffeeGpt/view/chat_screen.dart';
 import 'package:coffe_app/ui/coffee_list/view_model/coffee_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -59,11 +61,33 @@ class _CoffeeListViewState extends State<CoffeeListView> {
       builder: (context, value, widget) => value.busy
           ? const Center(child: CircularProgressIndicator())
           : Scaffold(
-              appBar: _appBar(context),
+              appBar: const CustomAppBar(),
               body: Stack(
                 children: [
                   ..._backgroundAlign(),
                   _coffeListBuilder(value),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: FloatingActionButton.large(
+                        onPressed: () {
+                          // Navigator.pushNamed(context, RouteConst.helperPage);
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const ChatScreenView();
+                            },
+                          );
+                        },
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        child: Image.asset(
+                          "assets/chatGpt/dash.png",
+                        ),
+                      ),
+                    ),
+                  ),
                   Container(
                     height: 240,
                     decoration: _backgroundDecoration(),

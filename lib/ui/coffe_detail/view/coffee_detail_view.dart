@@ -1,5 +1,6 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/coffe_detail/view_model/coffee_detail_model.dart';
@@ -32,7 +33,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
                 child: CircularProgressIndicator(),
               )
             : Scaffold(
-                appBar: _appBar(context),
+                appBar: const CustomAppBar(),
                 body: Stack(
                   fit: StackFit.expand,
                   clipBehavior: Clip.none,

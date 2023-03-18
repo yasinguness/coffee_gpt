@@ -1,5 +1,6 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class IntroView extends StatelessWidget {
@@ -14,7 +15,7 @@ class IntroView extends StatelessWidget {
       child: Container(
         decoration: _containerDecoration(),
         child: Scaffold(
-          appBar: _appBar(context),
+          appBar: const CustomAppBar(),
           body: Stack(
             children: [
               ...[1, 2, 3, 4].map((index) {

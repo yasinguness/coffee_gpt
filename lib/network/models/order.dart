@@ -5,10 +5,10 @@ part 'order.g.dart';
 class Order {
   String? id;
   String? image;
-  double? totalCoffePrice;
-  double? totalTreatPrice;
+  double? totalCoffeePrice;
+  String? totalTreatPrice;
 
-  Order({this.id, this.image, this.totalCoffePrice, this.totalTreatPrice});
+  Order({this.id, this.image, this.totalCoffeePrice, this.totalTreatPrice});
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<dynamic, dynamic> toJson() => _$OrderToJson(this);
 }

@@ -5,4 +5,5 @@ abstract class RouteConst {
   static const coffeeDetailView = '/coffeeDetail';
   static const sweetTreatsView = '/sweetTreatsView';
   static const checkoutView = '/checkoutView';
+  static const helperPage = '/helperPage';
 }

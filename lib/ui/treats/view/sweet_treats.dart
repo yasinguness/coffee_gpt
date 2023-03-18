@@ -1,10 +1,10 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
 import 'package:coffe_app/ui/treats/view/treats_list_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class SweetTreatsWidget extends StatefulWidget {
   final Coffee? coffee;
@@ -20,7 +20,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: _appBar(context),
+      appBar: const CustomAppBar(),
       body: Stack(
         children: [
           _buildBackground(),
@@ -48,7 +48,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
     );
   }
 
-  AppBar _appBar(BuildContext context) {
+/*   AppBar _appBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -72,7 +72,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
           )),
     );
   }
-
+ */
   Hero _coffeNameText(BuildContext context) {
     return Hero(
         tag: "name${widget.coffee!.name!.toString()}", //CoffeNameTag
