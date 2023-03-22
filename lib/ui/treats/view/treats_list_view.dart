@@ -1,4 +1,5 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
+import 'package:coffe_app/common/constants/coffee_padding.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
@@ -66,8 +67,8 @@ class _TreatsListViewState extends State<TreatsListView> {
                       child: Column(
                         children: [
                           _treatsPrice(context, value),
-                          const SizedBox(
-                            height: 15,
+                          SizedBox(
+                            height: size.height * 0.02, // 15 value
                           ),
                           _treatsNameList(value)
                         ],
@@ -147,7 +148,7 @@ class _TreatsListViewState extends State<TreatsListView> {
   SafeArea _treatsCalori(BuildContext context, TreatsViewModel treat) {
     return SafeArea(
         child: Padding(
-      padding: const EdgeInsets.only(right: 20),
+      padding: CoffeePading.instance.highHorizontalMediumVertical,
       child: Text(
         treat.treats![treat.index!].colories!,
         style: Theme.of(context).textTheme.headline5,
@@ -192,7 +193,7 @@ class _TreatsListViewState extends State<TreatsListView> {
 
   Positioned _elevatedButton(Size size, TreatsViewModel treat) {
     return Positioned(
-        right: 60,
+        right: size.width * 0.2,
         bottom: size.height * 0.25,
         child: ElevatedButton(
           onPressed: () {

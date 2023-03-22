@@ -11,6 +11,7 @@ class Coffee {
   double? smallPrice;
   double? mediumPrice;
   double? largePrice;
+  int? quantitiy;
 
   Coffee(
       {this.id,
@@ -20,7 +21,8 @@ class Coffee {
       this.smallPrice,
       this.largePrice,
       this.mediumPrice,
-      this.coffeeSize});
+      this.coffeeSize,
+      this.quantitiy});
 
   factory Coffee.fromJson(Map<String, dynamic> json) => _$CoffeeFromJson(json);
   Map<dynamic, dynamic> toJson() => _$CoffeeToJson(this);

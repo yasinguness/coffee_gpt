@@ -1,6 +1,9 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
+import 'package:coffe_app/common/constants/coffee_padding.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
+import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/coffe_detail/view_model/coffee_detail_model.dart';
@@ -82,36 +85,10 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
         model: CoffeeDetailViewModel(coffeeServices: Provider.of(context)));
   }
 
-  AppBar _appBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      actions: [
-        IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              FeatherIcons.shoppingBag,
-              color: CoffeeColors.black,
-              size: 30,
-            ))
-      ],
-      leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context, "fromHome");
-          },
-          icon: const Icon(
-            FeatherIcons.chevronLeft,
-            color: CoffeeColors.black,
-            size: 30,
-          )),
-    );
-  }
-
   ElevatedButton _coffeeButton(BuildContext context, CoffeeDetailViewModel value) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,
-          //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
           alignment: Alignment.centerLeft,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -127,7 +104,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
     return Row(
       children: [
         Text(
-          "Add to cart",
+          TextConst.addToCard,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: CoffeeColors.white),
         ),
         const SizedBox(
@@ -177,7 +154,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: CoffeePading.instance.mediumHorizontalLowVertical,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                     color: model.coffee?.coffeeSize == sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
@@ -279,24 +256,18 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
       children: [
         Expanded(
           flex: 1,
-          child: Container(
-              decoration: BoxDecoration(
-            gradient: LinearGradient(
-              end: Alignment.topRight,
+          child: BackgroundDecoration(
               begin: Alignment.bottomLeft,
-              stops: const [0.0, .50],
-              colors: [CoffeeColors.kBrownColor.withOpacity(.7), CoffeeColors.kBrownColor.withOpacity(0.0)],
-            ),
-          )),
+              end: Alignment.topRight,
+              colors: [CoffeeColors.kBrownColor.withOpacity(.7), CoffeeColors.kBrownColor.withOpacity(0.0)]),
         ),
         Expanded(
-          flex: 1,
-          child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [CoffeeColors.kBrownColor.withOpacity(0.5), CoffeeColors.kBrownColor.withOpacity(0.0)])),
-          ),
-        )
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [CoffeeColors.kBrownColor.withOpacity(0.5), CoffeeColors.kBrownColor.withOpacity(0.0)])),
+            ))
       ],
     );
   }

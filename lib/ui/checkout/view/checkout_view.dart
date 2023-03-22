@@ -1,12 +1,13 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
+import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
+import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/network/models/order.dart';
 import 'package:coffe_app/network/models/treat.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutView extends StatefulWidget {
@@ -19,13 +20,6 @@ class CheckoutView extends StatefulWidget {
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
-  late Order order;
-  @override
-  void initState() {
-    // TODO: implement initState
-    order = Order();
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -56,7 +50,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                             _coffeeRow(context, value),
                             if (widget.treat != null) _treatRow(context),
                             const Spacer(),
-                            _checkoutButton(value, order)
+                            _checkoutButton(value)
                             /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
                           ],
                         ),
@@ -66,7 +60,13 @@ class _CheckoutViewState extends State<CheckoutView> {
                 ),
               );
       },
-      model: CheckoutViewModel(orderServices: Provider.of(context), coffee: widget.coffee!, treat: widget.treat),
+      model: CheckoutViewModel(
+          orderServices: Provider.of(context),
+          coffee: widget.coffee!,
+          treat: widget.treat!,
+          order: Order(),
+          listCoffee: <Coffee>[],
+          listTreat: <Treat>[]),
       onModelReady: (p0) => p0.getCoffeePrice(),
     );
   }
@@ -93,7 +93,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   Text _myOrderText(BuildContext context) {
     return Text(
-      "My Order",
+      TextConst.orderText,
       style: Theme.of(context).textTheme.headline1,
     );
   }
@@ -160,7 +160,6 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   ElevatedButton _checkoutButton(
     CheckoutViewModel model,
-    Order order,
   ) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -171,35 +170,10 @@ class _CheckoutViewState extends State<CheckoutView> {
           ),
         ),
         onPressed: () {
-          model.postOrder(order);
+          model.postOrder();
         },
         child: const Text("Checkout Price"));
   }
-}
-
-AppBar _appBar(BuildContext context) {
-  return AppBar(
-    backgroundColor: Colors.transparent,
-    elevation: 0,
-    actions: [
-      IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            FeatherIcons.shoppingBag,
-            color: CoffeeColors.black,
-            size: 30,
-          ))
-    ],
-    leading: IconButton(
-        onPressed: () {
-          Navigator.pop(context, "fromHome");
-        },
-        icon: const Icon(
-          FeatherIcons.chevronLeft,
-          color: CoffeeColors.black,
-          size: 30,
-        )),
-  );
 }
 
 _buildBackground() {
@@ -207,27 +181,17 @@ _buildBackground() {
     children: [
       Expanded(
         flex: 1,
-        child: Container(
-            decoration: BoxDecoration(
-          gradient: LinearGradient(
-            end: Alignment.topCenter,
+        child: BackgroundDecoration(
             begin: Alignment.bottomCenter,
-            stops: const [0.0, .50],
-            colors: [CoffeeColors.kBrownColor.withOpacity(.7), CoffeeColors.kBrownColor.withOpacity(0.0)],
-          ),
-        )),
+            end: Alignment.topCenter,
+            colors: [CoffeeColors.kBrownColor.withOpacity(.7), CoffeeColors.kBrownColor.withOpacity(0.0)]),
       ),
-      Expanded(
+      const Expanded(
         flex: 1,
-        child: Container(
-            decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: const [0.0, .4],
-            colors: [CoffeeColors.kBrownColor.withOpacity(.5), CoffeeColors.kBrownColor.withOpacity(0.0)],
-          ),
-        )),
+        child: BackgroundDecoration(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
       ),
     ],
   );

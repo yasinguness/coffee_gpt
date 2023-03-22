@@ -1,12 +1,13 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
+import 'package:coffe_app/common/constants/coffee_padding.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/scrool.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
+import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/coffeeGpt/view/chat_screen.dart';
 import 'package:coffe_app/ui/coffee_list/view_model/coffee_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
 
 class CoffeeListView extends StatefulWidget {
@@ -55,6 +56,7 @@ class _CoffeeListViewState extends State<CoffeeListView> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return BaseView<CoffeListViewModel>(
       onModelReady: (p0) => p0.fetchCoffees(),
       model: CoffeListViewModel(coffeeServices: Provider.of(context)),
@@ -64,73 +66,25 @@ class _CoffeeListViewState extends State<CoffeeListView> {
               appBar: const CustomAppBar(),
               body: Stack(
                 children: [
-                  ..._backgroundAlign(),
+                  ..._backgroundAlign(size),
                   _coffeListBuilder(value),
                   Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: CoffeePading.instance.low,
                     child: Align(
                       alignment: Alignment.bottomRight,
-                      child: FloatingActionButton.large(
-                        onPressed: () {
-                          // Navigator.pushNamed(context, RouteConst.helperPage);
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const ChatScreenView();
-                            },
-                          );
-                        },
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        child: Image.asset(
-                          "assets/chatGpt/dash.png",
-                        ),
-                      ),
+                      child: _fabButton(context),
                     ),
                   ),
-                  Container(
-                    height: 240,
-                    decoration: _backgroundDecoration(),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [_coffeNameBuilder(value), ..._buildOverlays()],
-                    ),
-                  )
+                  _backgroundDecoration(size, value)
                 ],
               ),
             ),
     );
   }
 
-  AppBar _appBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      actions: [
-        IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              FeatherIcons.shoppingBag,
-              color: CoffeeColors.black,
-              size: 30,
-            ))
-      ],
-      leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context, "fromHome");
-          },
-          icon: const Icon(
-            FeatherIcons.chevronLeft,
-            color: CoffeeColors.black,
-            size: 30,
-          )),
-    );
-  }
-
-  BoxDecoration _backgroundDecoration() {
-    return BoxDecoration(
-        gradient: LinearGradient(
+  BackgroundDecoration _backgroundDecoration(Size size, CoffeListViewModel value) {
+    return BackgroundDecoration(
+      height: size.height * 0.3,
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       stops: const [0.6, 1],
@@ -138,12 +92,36 @@ class _CoffeeListViewState extends State<CoffeeListView> {
         Colors.white,
         Colors.white.withOpacity(0.0),
       ],
-    ));
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [_coffeNameBuilder(size, value), ..._buildOverlays()],
+      ),
+    );
   }
 
-  SizedBox _coffeNameBuilder(CoffeListViewModel value) {
+  FloatingActionButton _fabButton(BuildContext context) {
+    return FloatingActionButton.large(
+      onPressed: () {
+        // Navigator.pushNamed(context, RouteConst.helperPage);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return const ChatScreenView();
+          },
+        );
+      },
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: Image.asset(
+        "assets/chatGpt/dash.png",
+      ),
+    );
+  }
+
+  SizedBox _coffeNameBuilder(Size size, CoffeListViewModel value) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.1,
+      height: size.height * 0.15,
       child: PageView.builder(
         controller: _headingController,
         itemCount: value.coffees!.length + 1,
@@ -155,6 +133,9 @@ class _CoffeeListViewState extends State<CoffeeListView> {
           }
           return Column(
             children: [
+              SizedBox(
+                height: size.height * 0.04,
+              ),
               Expanded(
                 child: _name(value, index, context),
               ),
@@ -268,17 +249,17 @@ class _CoffeeListViewState extends State<CoffeeListView> {
     );
   }
 
-  List<Widget> _backgroundAlign() {
-    return [_bottomCenterAlign(), _leftCenterAlign(), _rightBottomAlign()];
+  List<Widget> _backgroundAlign(Size size) {
+    return [_bottomCenterAlign(size), _leftCenterAlign(), _rightBottomAlign(size)];
   }
 
-  Align _rightBottomAlign() {
+  Align _rightBottomAlign(Size size) {
     return Align(
       alignment: Alignment.bottomRight + const Alignment(5, -0.40),
-      child: const SizedBox(
-          width: 350,
-          height: 350,
-          child: DecoratedBox(
+      child: SizedBox(
+          width: size.width * 0.8,
+          height: size.height * 0.4,
+          child: const DecoratedBox(
             decoration: BoxDecoration(
               // color: kBrownColor,
               boxShadow: [
@@ -308,12 +289,12 @@ class _CoffeeListViewState extends State<CoffeeListView> {
     );
   }
 
-  Align _bottomCenterAlign() {
+  Align _bottomCenterAlign(Size size) {
     return Align(
       alignment: Alignment.bottomCenter + const Alignment(0, .4),
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
-        height: MediaQuery.of(context).size.height * 0.5,
+        width: size.width * 0.5,
+        height: size.height * 0.5,
         decoration: const BoxDecoration(
           boxShadow: [
             BoxShadow(color: Colors.brown, blurRadius: 90, spreadRadius: 90, offset: Offset.zero),

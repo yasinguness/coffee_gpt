@@ -14,7 +14,9 @@ Coffee _$CoffeeFromJson(Map<String, dynamic> json) => Coffee(
       smallPrice: (json['smallPrice'] as num?)?.toDouble(),
       largePrice: (json['largePrice'] as num?)?.toDouble(),
       mediumPrice: (json['mediumPrice'] as num?)?.toDouble(),
-    )..coffeeSize = json['coffeeSize'] as String?;
+      coffeeSize: json['coffeeSize'] as String?,
+      quantitiy: json['quantitiy'] as int?,
+    );
 
 Map<String, dynamic> _$CoffeeToJson(Coffee instance) => <String, dynamic>{
       '_id': instance.id,
@@ -25,4 +27,5 @@ Map<String, dynamic> _$CoffeeToJson(Coffee instance) => <String, dynamic>{
       'smallPrice': instance.smallPrice,
       'mediumPrice': instance.mediumPrice,
       'largePrice': instance.largePrice,
+      'quantitiy': instance.quantitiy,
     };

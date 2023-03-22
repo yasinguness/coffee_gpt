@@ -10,12 +10,13 @@ class CheckoutViewModel extends BaseModel {
   OrderService? orderServices;
   Coffee coffee;
   Treat? treat;
+  Order? order;
 
-  //Şu yöntemle consturoctor ile CoffeDetailViewModeli alıp öyle kullanayım dedim.
-  // Ancak bunda da değerler null düştü hep.
-
-  CheckoutViewModel({this.orderServices, required this.coffee, this.treat});
+  CheckoutViewModel(
+      {this.orderServices, required this.coffee, this.treat, this.order, required this.listCoffee, this.listTreat});
   double? _price;
+  List<Treat>? listTreat;
+  List<Coffee> listCoffee;
   double get price => _price!;
 
   set price(double value) {
@@ -40,12 +41,26 @@ class CheckoutViewModel extends BaseModel {
     }
   }
 
-  Future postOrder(Order order) async {
+  void addCoffee() {
+    listCoffee.add(coffee);
+    order!.coffeeList = listCoffee;
+  }
+
+  void addTreat() {
+    listTreat?.add(treat!);
+    order!.treatList = listTreat;
+  }
+
+  Future postOrder() async {
     setBusy(true);
-    order.totalCoffeePrice = price;
-    order.totalTreatPrice = treat!.price;
-    order.image = order.image;
-    orderServices!.postOrder(order);
+    addCoffee();
+    addTreat();
+    order!.ordersOwner = "Yasin";
+
+    order!.totalPrice = price;
+    order!.time = DateTime.now();
+
+    await orderServices!.postOrder(order!);
     setBusy(false);
   }
 }

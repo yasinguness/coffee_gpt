@@ -3,20 +3,15 @@ part 'treat.g.dart';
 
 @JsonSerializable()
 class Treat {
-  final String? id;
-  final String? name;
-  final String? description;
-  final String? colories;
-  final String? image;
-  final String? price;
+  String? id;
+  String? name;
+  String? description;
+  String? colories;
+  String? image;
+  String? price;
+  int? quantity;
 
-  Treat(
-      {required this.id,
-      required this.name,
-      required this.colories,
-      required this.description,
-      required this.image,
-      required this.price});
+  Treat({this.id, this.name, this.colories, this.description, this.image, this.price, this.quantity});
 
   factory Treat.fromJson(Map<String, dynamic> json) => _$TreatFromJson(json);
   Map<String, dynamic> toJson() => _$TreatToJson(this);
