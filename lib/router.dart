@@ -5,7 +5,8 @@ import 'package:coffe_app/ui/coffe_detail/view/coffee_detail_view.dart';
 import 'package:coffe_app/ui/coffeeGpt/view/chat_screen.dart';
 import 'package:coffe_app/ui/coffee_list/view/coffe_list_view.dart';
 import 'package:coffe_app/ui/home/view/home_view.dart';
-import 'package:coffe_app/ui/Intro/view/intro_view.dart';
+import 'package:coffe_app/ui/login/view/login_view.dart';
+import 'package:coffe_app/ui/splash/view/splash_view.dart';
 import 'package:coffe_app/ui/treats/view/sweet_treats.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,12 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
 
     case RouteConst.loginView:
       return MaterialPageRoute(
-        builder: (context) => const IntroView(),
+        builder: (context) => const LoginView(),
+      );
+
+    case RouteConst.splashView:
+      return MaterialPageRoute(
+        builder: (context) => const SplashView(),
       );
 
     case RouteConst.coffeeListView:

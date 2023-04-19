@@ -4,12 +4,14 @@ import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
+import 'package:coffe_app/locator.dart';
+import 'package:coffe_app/main.dart';
 import 'package:coffe_app/network/models/coffee.dart';
+import 'package:coffe_app/network/services/coffee/coffee_services.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/coffe_detail/view_model/coffee_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:provider/provider.dart';
 
 class CoffeeDetailView extends StatefulWidget {
   final Coffee? coffee;
@@ -19,17 +21,13 @@ class CoffeeDetailView extends StatefulWidget {
   State<CoffeeDetailView> createState() => _CoffeeDetailViewState();
 }
 
-class _CoffeeDetailViewState extends State<CoffeeDetailView> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
+class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return BaseView<CoffeeDetailViewModel>(
+        routeObserver: routeObserver,
+        onDispose: () => routeObserver.unsubscribe(this),
         onModelReady: (p0) => p0.getCoffee(widget.coffee!.id!, widget.coffee!.coffeeSize!),
         builder: (context, value, widget) => value.busy
             ? const Center(
@@ -82,7 +80,11 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
                 ),
               ),
         //  onModelReady: (p0) => p0.getCoffee(widget.coffee!.id!),
-        model: CoffeeDetailViewModel(coffeeServices: Provider.of(context)));
+        model: CoffeeDetailViewModel(
+          coffeeServices: locator<CoffeeServices>(),
+
+          // listCoffee: Provider.of<CheckoutViewModel>(context).order!.coffeeList,
+        ));
   }
 
   ElevatedButton _coffeeButton(BuildContext context, CoffeeDetailViewModel value) {
@@ -95,6 +97,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> {
           ),
         ),
         onPressed: () {
+          value.addList();
           Navigator.pushNamed(context, RouteConst.sweetTreatsView, arguments: value.coffee);
         },
         child: _elevatedButtonText(context));

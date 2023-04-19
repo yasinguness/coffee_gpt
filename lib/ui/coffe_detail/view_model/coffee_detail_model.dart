@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/network/services/coffee/coffee_services.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
+import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 
 class CoffeeDetailViewModel extends BaseModel {
-  final CoffeeServices? coffeeServices;
-  CoffeeDetailViewModel({
-    this.coffeeServices,
-  });
+  CoffeeServices? coffeeServices;
+  List<Coffee>? listCoffee;
+  CheckoutViewModel? checkoutVm;
+  CoffeeDetailViewModel({this.coffeeServices, this.listCoffee, this.checkoutVm});
+
   Coffee? coffee;
   double? _price;
 
@@ -31,20 +33,13 @@ class CoffeeDetailViewModel extends BaseModel {
     }
   }
 
+  void addList() {
+    listCoffee?.add(coffee!);
+  }
+
   Future getCoffee(String id, String sizeCoffe) async {
     coffee = await coffeeServices!.getCoffeeId(id);
-    price = getCoffeePrice(sizeCoffe); //Seçilen boyuta göre olan kahve fiyatını price değişkenine atıyor.
-    // Ben de bu price değerini CheckoutView(ödeme sayfası gibi) de kullanmam lazım. Daha sonra bu değeri
-    // OrderModel'deki coffeePrice değerinde kullanıcam ama o sonraki iş.Şuan bu değeri Checkoutta göstermem lazım.
+    price = getCoffeePrice(sizeCoffe);
     setBusy(false); // notifyListeners
   }
 }
-/* double getCoffeePrice(String size) {
-    if (size == 'S') {
-      return coffee!.smallPrice!;
-    } else if (size == 'L') {
-      return coffee!.largePrice!;
-    } else {
-      return coffee!.mediumPrice!;
-    }
-  } */

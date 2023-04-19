@@ -13,10 +13,11 @@ class CheckoutViewModel extends BaseModel {
   Order? order;
 
   CheckoutViewModel(
-      {this.orderServices, required this.coffee, this.treat, this.order, required this.listCoffee, this.listTreat});
+      {this.orderServices, required this.coffee, this.treat, this.order, this.listTreat, this.listCoffee});
   double? _price;
-  List<Treat>? listTreat;
-  List<Coffee> listCoffee;
+
+  List<Treat?>? listTreat;
+  List<Coffee>? listCoffee;
   double get price => _price!;
 
   set price(double value) {
@@ -41,25 +42,13 @@ class CheckoutViewModel extends BaseModel {
     }
   }
 
-  void addCoffee() {
-    listCoffee.add(coffee);
-    order!.coffeeList = listCoffee;
-  }
-
   void addTreat() {
-    listTreat?.add(treat!);
+    listTreat?.add(treat);
     order!.treatList = listTreat;
   }
 
   Future postOrder() async {
     setBusy(true);
-    addCoffee();
-    addTreat();
-    order!.ordersOwner = "Yasin";
-
-    order!.totalPrice = price;
-    order!.time = DateTime.now();
-
     await orderServices!.postOrder(order!);
     setBusy(false);
   }

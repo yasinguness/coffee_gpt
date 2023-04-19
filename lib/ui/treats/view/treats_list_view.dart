@@ -1,13 +1,15 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/coffee_padding.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/locator.dart';
+import 'package:coffe_app/main.dart';
 import 'package:coffe_app/network/models/coffee.dart';
+import 'package:coffe_app/network/services/treat/treat_service.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
 import 'package:coffe_app/ui/treats/view_model/treats_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:provider/provider.dart';
 
 class TreatsListView extends StatefulWidget {
   final Coffee? coffee;
@@ -17,7 +19,7 @@ class TreatsListView extends StatefulWidget {
   State<TreatsListView> createState() => _TreatsListViewState();
 }
 
-class _TreatsListViewState extends State<TreatsListView> {
+class _TreatsListViewState extends State<TreatsListView> with RouteAware {
   late final PageController _treatsController;
   late final PageController _headingController;
   late double _currentPosition;
@@ -54,6 +56,8 @@ class _TreatsListViewState extends State<TreatsListView> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return BaseView<TreatsViewModel>(
+        routeObserver: routeObserver,
+        onDispose: () => routeObserver.unsubscribe(this),
         builder: (context, value, widget) => value.busy
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -94,7 +98,7 @@ class _TreatsListViewState extends State<TreatsListView> {
                 ],
               ),
         onModelReady: (p0) => p0.fetchTreats(),
-        model: TreatsViewModel(treatService: Provider.of(context))); //TODO:Neden provider of context yapıyoruz.
+        model: TreatsViewModel(treatService: locator<TreatService>())); //TODO:Neden provider of context yapıyoruz.
   }
 
   Align _treatsPrice(BuildContext context, TreatsViewModel treat) {

@@ -8,7 +8,7 @@ class Order {
   String? id;
   String? ordersOwner;
   List<Coffee>? coffeeList;
-  List<Treat>? treatList;
+  List<Treat?>? treatList;
   int? tableNumber;
   double? totalPrice;
   DateTime? time;

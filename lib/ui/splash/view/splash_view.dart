@@ -3,30 +3,42 @@ import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:flutter/material.dart';
 
-class IntroView extends StatelessWidget {
-  const IntroView({super.key});
+class SplashView extends StatefulWidget {
+  const SplashView({super.key});
+
+  @override
+  State<SplashView> createState() => _SplashViewState();
+}
+
+class _SplashViewState extends State<SplashView> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(
+      const Duration(milliseconds: 1500),
+      () {
+        Navigator.pushNamed(context, RouteConst.loginView);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, RouteConst.coffeeListView);
-      },
-      child: Container(
-        decoration: _containerDecoration(),
-        child: Scaffold(
-          appBar: const CustomAppBar(),
-          body: Stack(
-            children: [
-              ...[1, 2, 3, 4].map((index) {
-                //TODO:Buralara bak
-                double scale = 1.0 + (index - 1) * 0.32 + (index == 4 ? 0.3 : 0);
-                double translate = (index - 1) * 100.0 + (index == 4 ? 160 : 0);
-                return _image(translate, scale, index);
-              }).toList(),
-              _align()
-            ],
-          ),
+    return Container(
+      decoration: _containerDecoration(),
+      child: Scaffold(
+        appBar: const CustomAppBar(),
+        body: Stack(
+          children: [
+            ...[1, 2, 3, 4].map((index) {
+              //TODO:Buralara bak
+              double scale = 1.0 + (index - 1) * 0.32 + (index == 4 ? 0.3 : 0);
+              double translate = (index - 1) * 100.0 + (index == 4 ? 160 : 0);
+              return _image(translate, scale, index);
+            }).toList(),
+            _align()
+          ],
         ),
       ),
     );

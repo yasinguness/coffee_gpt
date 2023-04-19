@@ -10,7 +10,9 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
       id: json['_id'] as String?,
       coffeeList:
           (json['coffeeList'] as List<dynamic>?)?.map((e) => Coffee.fromJson(e as Map<String, dynamic>)).toList(),
-      treatList: (json['treatList'] as List<dynamic>?)?.map((e) => Treat.fromJson(e as Map<String, dynamic>)).toList(),
+      treatList: (json['treatList'] as List<dynamic>?)
+          ?.map((e) => e == null ? null : Treat.fromJson(e as Map<String, dynamic>))
+          .toList(),
       time: json['time'] == null ? null : DateTime.parse(json['time'] as String),
     )
       ..ordersOwner = json['ordersOwner'] as String?

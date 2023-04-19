@@ -2,12 +2,14 @@ import 'dart:developer';
 
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/chat_bubble_widget/message_bubble.dart';
+import 'package:coffe_app/locator.dart';
+import 'package:coffe_app/main.dart';
+import 'package:coffe_app/network/services/chat_gpt/chat_gpt_service.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/common/widgets/text_widget.dart';
 import 'package:coffe_app/ui/coffeeGpt/view_model/coffee_gpt_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provider/provider.dart';
 
 class ChatScreenView extends StatefulWidget {
   const ChatScreenView({super.key});
@@ -16,7 +18,7 @@ class ChatScreenView extends StatefulWidget {
   State<ChatScreenView> createState() => _ChatScreenViewState();
 }
 
-class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProviderStateMixin {
+class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProviderStateMixin, RouteAware {
   bool _isTyping = false;
   late TextEditingController textEditingController;
   late ScrollController scrollController;
@@ -53,6 +55,8 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return BaseView<CoffeGptViewModel>(
+      routeObserver: routeObserver,
+      onDispose: () => routeObserver.unsubscribe(this),
       builder: (context, value, widget) => ScaleTransition(
         scale: scaleAnimation,
         child: Scaffold(
@@ -99,7 +103,7 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
           )),
         ),
       ),
-      model: CoffeGptViewModel(chatGptServices: Provider.of(context)),
+      model: CoffeGptViewModel(chatGptServices: locator<ChatGptServices>()),
     );
   }
 

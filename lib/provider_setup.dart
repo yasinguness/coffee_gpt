@@ -19,6 +19,10 @@ List<SingleChildWidget> independentServices = [
   Provider<ChatGptServices>(
     create: (context) => ChatGptServices(),
   ),
+
+  /* ListenableProvider<CheckoutViewModel>(
+    create: (context) => CheckoutViewModel(coffee: Coffee()),
+  ), */
 /*   ListenableProvider<CheckoutViewModel>(
     create: (context) => CheckoutViewModel(coffee: Coffee()),
   ),

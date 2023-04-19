@@ -4,11 +4,12 @@ import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/scrool.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
+import 'package:coffe_app/locator.dart';
+import 'package:coffe_app/network/services/coffee/coffee_services.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/coffeeGpt/view/chat_screen.dart';
 import 'package:coffe_app/ui/coffee_list/view_model/coffee_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CoffeeListView extends StatefulWidget {
   const CoffeeListView({super.key});
@@ -17,7 +18,7 @@ class CoffeeListView extends StatefulWidget {
   State<CoffeeListView> createState() => _CoffeeListViewState();
 }
 
-class _CoffeeListViewState extends State<CoffeeListView> {
+class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
   late PageController _coffeeController;
   late PageController _headingController;
   late double _currentPosition;
@@ -58,8 +59,10 @@ class _CoffeeListViewState extends State<CoffeeListView> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return BaseView<CoffeListViewModel>(
+      //routeObserver: routeObserver,
+      //onDispose: () => routeObserver.unsubscribe(this),
       onModelReady: (p0) => p0.fetchCoffees(),
-      model: CoffeListViewModel(coffeeServices: Provider.of(context)),
+      model: CoffeListViewModel(coffeeServices: locator<CoffeeServices>()),
       builder: (context, value, widget) => value.busy
           ? const Center(child: CircularProgressIndicator())
           : Scaffold(

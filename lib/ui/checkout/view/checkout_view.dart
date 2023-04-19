@@ -2,13 +2,15 @@ import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
+import 'package:coffe_app/locator.dart';
+import 'package:coffe_app/main.dart';
 import 'package:coffe_app/network/models/coffee.dart';
 import 'package:coffe_app/network/models/order.dart';
 import 'package:coffe_app/network/models/treat.dart';
+import 'package:coffe_app/network/services/order/order_service.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CheckoutView extends StatefulWidget {
   final Treat? treat;
@@ -19,12 +21,14 @@ class CheckoutView extends StatefulWidget {
   State<CheckoutView> createState() => _CheckoutViewState();
 }
 
-class _CheckoutViewState extends State<CheckoutView> {
+class _CheckoutViewState extends State<CheckoutView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     return BaseView<CheckoutViewModel>(
+      routeObserver: routeObserver,
+      onDispose: () => routeObserver.unsubscribe(this),
       builder: (context, value, wtg) {
         return value.busy
             ? const Center(child: CircularProgressIndicator())
@@ -61,12 +65,13 @@ class _CheckoutViewState extends State<CheckoutView> {
               );
       },
       model: CheckoutViewModel(
-          orderServices: Provider.of(context),
-          coffee: widget.coffee!,
-          treat: widget.treat!,
-          order: Order(),
-          listCoffee: <Coffee>[],
-          listTreat: <Treat>[]),
+        orderServices: locator<OrderService>(),
+        coffee: widget.coffee!,
+        treat: widget.treat,
+        order: Order(),
+        listTreat: <Treat>[],
+        listCoffee: <Coffee>[],
+      ),
       onModelReady: (p0) => p0.getCoffeePrice(),
     );
   }
