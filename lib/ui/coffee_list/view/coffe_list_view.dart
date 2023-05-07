@@ -59,8 +59,6 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return BaseView<CoffeListViewModel>(
-      //routeObserver: routeObserver,
-      //onDispose: () => routeObserver.unsubscribe(this),
       onModelReady: (p0) => p0.fetchCoffees(),
       model: CoffeListViewModel(coffeeServices: locator<CoffeeServices>()),
       builder: (context, value, widget) => value.busy
@@ -98,7 +96,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [_coffeNameBuilder(size, value), ..._buildOverlays()],
+        children: [_coffeNameBuilder(size, value), _buildOverlays()],
       ),
     );
   }
@@ -122,32 +120,33 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
     );
   }
 
-  SizedBox _coffeNameBuilder(Size size, CoffeListViewModel value) {
-    return SizedBox(
-      height: size.height * 0.15,
-      child: PageView.builder(
-        controller: _headingController,
-        itemCount: value.coffees!.length + 1,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          value.index = index;
-          if (index == value.coffees!.length) {
-            return const SizedBox.shrink();
-          }
-          return Column(
-            children: [
-              SizedBox(
-                height: size.height * 0.04,
-              ),
-              Expanded(
-                child: _name(value, index, context),
-              ),
-              Expanded(
-                child: _price(value, index, context),
-              )
-            ],
-          );
-        },
+  Expanded _coffeNameBuilder(Size size, CoffeListViewModel value) {
+    return Expanded(
+      child: SizedBox(
+        //height: size.height * 0.30,
+        child: PageView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _headingController,
+          itemCount: value.coffees!.length + 1,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            value.index = index;
+            if (index == value.coffees!.length) {
+              return const SizedBox.shrink();
+            }
+            return Column(
+              children: [
+                Expanded(
+                  child: _name(value, index, context),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: _price(value, index, context),
+                )
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -175,7 +174,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
   Transform _coffeListBuilder(CoffeListViewModel value) {
     return Transform.scale(
       alignment: Alignment.bottomCenter,
-      scale: 2.4,
+      scale: 2.6,
       child: PageView.builder(
         controller: _coffeeController,
         itemCount: value.coffees!.length + 1,
@@ -253,64 +252,30 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
   }
 
   List<Widget> _backgroundAlign(Size size) {
-    return [_bottomCenterAlign(size), _leftCenterAlign(), _rightBottomAlign(size)];
-  }
-
-  Align _rightBottomAlign(Size size) {
-    return Align(
-      alignment: Alignment.bottomRight + const Alignment(5, -0.40),
-      child: SizedBox(
-          width: size.width * 0.8,
-          height: size.height * 0.4,
-          child: const DecoratedBox(
-            decoration: BoxDecoration(
-              // color: kBrownColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.brown,
-                  blurRadius: 60,
-                  spreadRadius: 20,
-                  offset: Offset(5, 0),
-                ),
-              ],
-              shape: BoxShape.circle,
-            ),
-          )),
-    );
-  }
-
-  Align _leftCenterAlign() {
-    return Align(
-      alignment: Alignment.centerLeft + const Alignment(-0.3, -0.5),
-      child: Container(
-        width: 60,
-        height: 200,
-        decoration: const BoxDecoration(boxShadow: [
-          BoxShadow(color: Colors.brown, blurRadius: 50, spreadRadius: 20, offset: Offset(5, 0)),
-        ], borderRadius: BorderRadius.only(topRight: Radius.circular(50), bottomRight: Radius.circular(50))),
-      ),
-    );
+    return [
+      _bottomCenterAlign(size), /*  _leftCenterAlign(), _rightBottomAlign(size) */
+    ];
   }
 
   Align _bottomCenterAlign(Size size) {
     return Align(
-      alignment: Alignment.bottomCenter + const Alignment(0, .4),
+      alignment: Alignment.bottomCenter + const Alignment(0, .5),
       child: Container(
-        width: size.width * 0.5,
-        height: size.height * 0.5,
+        width: size.width,
+        height: size.height * 0.4,
         decoration: const BoxDecoration(
           boxShadow: [
-            BoxShadow(color: Colors.brown, blurRadius: 90, spreadRadius: 90, offset: Offset.zero),
+            BoxShadow(color: Colors.brown, blurRadius: 90, spreadRadius: 60, offset: Offset.zero),
           ],
-          shape: BoxShape.circle,
+          shape: BoxShape.rectangle,
         ),
       ),
     );
   }
 
-  List<Widget> _buildOverlays() {
-    return [
-      Align(
+  Expanded _buildOverlays() {
+    return Expanded(
+      child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
           height: 50,
@@ -326,7 +291,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
             ),
           ),
         ),
-      )
-    ];
+      ),
+    );
   }
 }

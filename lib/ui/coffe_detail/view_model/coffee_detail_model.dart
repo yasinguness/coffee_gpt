@@ -1,20 +1,36 @@
 import 'dart:async';
 
 import 'package:coffe_app/network/models/coffee.dart';
+import 'package:coffe_app/network/models/order.dart';
 import 'package:coffe_app/network/services/coffee/coffee_services.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 
 class CoffeeDetailViewModel extends BaseModel {
   CoffeeServices? coffeeServices;
-  List<Coffee>? listCoffee;
+  //List<Order>? orderList;
+  Order? order;
   CheckoutViewModel? checkoutVm;
-  CoffeeDetailViewModel({this.coffeeServices, this.listCoffee, this.checkoutVm});
+  CoffeeDetailViewModel({this.coffeeServices, this.order, this.checkoutVm});
 
+  var counter = 1;
   Coffee? coffee;
   double? _price;
 
   double get price => _price!;
+
+  void incrementCounter() {
+    counter++;
+    setBusy(false);
+  }
+
+  void decrementCounter() {
+    if (counter < 1) {
+      counter = 1;
+    }
+    counter--;
+    setBusy(false);
+  }
 
   set price(double value) {
     _price = value;
@@ -34,7 +50,7 @@ class CoffeeDetailViewModel extends BaseModel {
   }
 
   void addList() {
-    listCoffee?.add(coffee!);
+    order?.coffeeList?.add(coffee!);
   }
 
   Future getCoffee(String id, String sizeCoffe) async {

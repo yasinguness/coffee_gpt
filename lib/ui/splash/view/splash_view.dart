@@ -25,20 +25,22 @@ class _SplashViewState extends State<SplashView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: _containerDecoration(),
-      child: Scaffold(
-        appBar: const CustomAppBar(),
-        body: Stack(
-          children: [
-            ...[1, 2, 3, 4].map((index) {
-              //TODO:Buralara bak
-              double scale = 1.0 + (index - 1) * 0.32 + (index == 4 ? 0.3 : 0);
-              double translate = (index - 1) * 100.0 + (index == 4 ? 160 : 0);
-              return _image(translate, scale, index);
-            }).toList(),
-            _align()
-          ],
+    return Center(
+      child: Container(
+        decoration: _containerDecoration(),
+        child: Scaffold(
+          appBar: const CustomAppBar(),
+          body: Stack(
+            children: [
+              ...[1, 2, 3, 4].map((index) {
+                //TODO:Buralara bak
+                double scale = 1.0 + (index - 1) * 0.32 + (index == 4 ? 0.3 : 0);
+                double translate = (index - 1) * 100.0 + (index == 4 ? 160 : 0);
+                return _image(translate, scale, index);
+              }).toList(),
+              _align()
+            ],
+          ),
         ),
       ),
     );

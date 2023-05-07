@@ -38,26 +38,38 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
                   alignment: Alignment.center,
                   children: [
                     _buildBackground(),
-                    _coffeImage(),
-                    if (widget.treat != null) _treatImage(size),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.all(25),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            _myOrderText(context),
-                            const SizedBox(
-                              height: 25,
-                            ),
-                            _coffeeRow(context, value),
-                            if (widget.treat != null) _treatRow(context),
-                            const Spacer(),
-                            _checkoutButton(value)
-                            /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
-                          ],
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _myOrders(context),
+                          SizedBox(
+                            height: size.height * 0.04,
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  _coffeCard(size, context, value, index),
+                                  const Divider(
+                                    thickness: 1,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                  if (widget.treat != null) _treatCard(size, context, value),
+                                  if (widget.treat != null) const Divider(thickness: 1)
+                                ],
+                              );
+                            },
+                            itemCount: value.order?.coffeeList?.length,
+                          ),
+                          const Spacer(),
+                          _checkoutButton(value)
+                          /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
+                        ],
                       ),
                     )
                   ],
@@ -76,77 +88,163 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     );
   }
 
-  Row _coffeeRow(BuildContext context, CheckoutViewModel model) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [_coffeName(context), _coffePrice(model, context)],
+  Container _treatCard(Size size, BuildContext context, CheckoutViewModel value) {
+    return Container(
+      height: size.height * 0.1,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.transparent),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [_treatImage(size), _treatNameAndQuantity(context, value, size), _treatPrice(context, size)],
+      ),
     );
   }
 
-  Padding _treatRow(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
+  Container _coffeCard(Size size, BuildContext context, CheckoutViewModel value, int index) {
+    return Container(
+      height: size.height * 0.1,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.transparent,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [_coffeImage(size), _coffeeNameAndQuantity(context, value, index), _coffePrice(value, context)],
+      ),
+    );
+  }
+
+  Expanded _coffeeNameAndQuantity(BuildContext context, CheckoutViewModel value, int index) {
+    return Expanded(
+        flex: 3,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [_coffeName(context, value, index), _quantity(value)]));
+  }
+
+  Expanded _treatNameAndQuantity(BuildContext context, CheckoutViewModel value, Size size) {
+    return Expanded(
+      flex: 3,
+      child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        _treatName(context),
+        _quantity(value),
+      ]),
+    );
+  }
+
+  Expanded _quantity(CheckoutViewModel model) {
+    return Expanded(
+      flex: 1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _treatName(context),
-          _treatText(context),
+          GestureDetector(
+            onTap: model.decrementCounter,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: CoffeeColors.kTitleColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
+              child: const Icon(
+                Icons.remove,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          //TODO:Artır butonunu basıldığında buton kayıyor**
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Text(
+              model.counter.toString(),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          GestureDetector(
+            onTap: model.incrementCounter,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                  color: CoffeeColors.kTitleColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          )
         ],
       ),
     );
   }
 
-  Text _myOrderText(BuildContext context) {
+  Text _myOrders(BuildContext context) {
     return Text(
       TextConst.orderText,
       style: Theme.of(context).textTheme.headline1,
     );
   }
 
-  Hero _coffeImage() {
-    return Hero(
-        tag: "nameCoffee", //CoffeImageTag
-        child: Image.asset(
-          "assets/coffee/GLASS-2.png",
-          fit: BoxFit.contain,
-        ));
+  Expanded _coffeImage(Size size) {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+        child: Hero(
+            tag: "nameCoffee", //CoffeImageTag
+            child: Image.asset(
+              "assets/coffee/GLASS-2.png",
+              fit: BoxFit.contain,
+            )),
+      ),
+    );
   }
 
-  Align _treatImage(Size size) {
-    return Align(
-      alignment: const Alignment(2, 0.5),
-      child: SizedBox(
-        width: size.width * 0.8,
+  Expanded _treatImage(Size size) {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         child: Image.asset(
           "assets/treat/TREAT_0.png",
           fit: BoxFit.contain,
+          width: 50,
+          height: 50,
         ),
       ),
     );
   }
 
-  Text _coffePrice(CheckoutViewModel model, BuildContext context) {
-    return Text(
-      "${model.price}",
-      style: Theme.of(context).textTheme.subtitle1!.copyWith(
-          fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w600, color: CoffeeColors.kTitleColor.withOpacity(.8)),
+  Expanded _coffePrice(CheckoutViewModel model, BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: Text(
+        "${model.price} TL",
+        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+            fontSize: 16,
+            letterSpacing: 1,
+            fontWeight: FontWeight.w600,
+            color: CoffeeColors.kTitleColor.withOpacity(.8)),
+      ),
     );
   }
 
-  Expanded _coffeName(BuildContext context) {
-    return Expanded(
-        child: Text(
-      widget.coffee!.name!,
+  Text _coffeName(BuildContext context, CheckoutViewModel model, int index) {
+    return Text(
+      model.order!.coffeeList![index].name!,
       style: Theme.of(context)
           .textTheme
           .subtitle1!
           .copyWith(fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w800, color: CoffeeColors.kTitleColor),
-    ));
+    );
   }
 
   Expanded _treatName(BuildContext context) {
     return Expanded(
+      flex: 1,
       child: Text(widget.treat!.name!,
+          textAlign: TextAlign.center,
           style: Theme.of(context)
               .textTheme
               .subtitle1!
@@ -154,13 +252,16 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     );
   }
 
-  Text _treatText(BuildContext context) {
-    return Text("${widget.treat!.price!} TL",
-        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-            fontSize: 18,
-            letterSpacing: 1,
-            fontWeight: FontWeight.w600,
-            color: CoffeeColors.kTitleColor.withOpacity(.8)));
+  Expanded _treatPrice(BuildContext context, Size size) {
+    return Expanded(
+      flex: 1,
+      child: Text("${widget.treat!.price!} TL",
+          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+              fontSize: 16,
+              letterSpacing: 1,
+              fontWeight: FontWeight.w600,
+              color: CoffeeColors.kTitleColor.withOpacity(.8))),
+    );
   }
 
   ElevatedButton _checkoutButton(
@@ -189,14 +290,14 @@ _buildBackground() {
         child: BackgroundDecoration(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
-            colors: [CoffeeColors.kBrownColor.withOpacity(.7), CoffeeColors.kBrownColor.withOpacity(0.0)]),
+            colors: [CoffeeColors.kBrownColor.withOpacity(.3), CoffeeColors.kBrownColor.withOpacity(0.1)]),
       ),
-      const Expanded(
+      Expanded(
         flex: 1,
         child: BackgroundDecoration(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [CoffeeColors.kBrownColor.withOpacity(.3), CoffeeColors.kBrownColor.withOpacity(0.1)]),
       ),
     ],
   );

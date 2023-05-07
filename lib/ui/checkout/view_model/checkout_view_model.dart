@@ -19,6 +19,17 @@ class CheckoutViewModel extends BaseModel {
   List<Treat?>? listTreat;
   List<Coffee>? listCoffee;
   double get price => _price!;
+  var counter = 1;
+
+  void incrementCounter() {
+    counter++;
+    setBusy(false);
+  }
+
+  void decrementCounter() {
+    counter--;
+    setBusy(false);
+  }
 
   set price(double value) {
     _price = value;
