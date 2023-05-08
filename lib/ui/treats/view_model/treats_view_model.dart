@@ -4,7 +4,7 @@ import 'package:coffe_app/network/models/treat.dart';
 import 'package:coffe_app/network/services/treat/treat_service.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 
-class TreatsViewModel extends ServiceModel {
+class TreatsViewModel extends BaseModel {
   final TreatService? treatService;
 
   TreatsViewModel({this.treatService});
