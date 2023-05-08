@@ -6,7 +6,7 @@ import 'package:coffe_app/network/services/coffee/coffee_services.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 
-class CoffeeDetailViewModel extends BaseModel {
+class CoffeeDetailViewModel extends ServiceModel {
   CoffeeServices? coffeeServices;
   //List<Order>? orderList;
   Order? order;

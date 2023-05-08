@@ -1,6 +1,7 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/coffee_padding.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/common/constants/scrool.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
 import 'package:coffe_app/network/models/coffee.dart';
@@ -192,6 +193,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
       controller: _treatsController,
       scrollDirection: Axis.vertical,
       itemCount: treat.treats!.length + 1,
+      scrollBehavior: WindowsScrollBehaviour(),
     );
   }
 

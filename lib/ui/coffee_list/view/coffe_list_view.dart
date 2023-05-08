@@ -120,33 +120,26 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
     );
   }
 
-  Expanded _coffeNameBuilder(Size size, CoffeListViewModel value) {
-    return Expanded(
-      child: SizedBox(
-        //height: size.height * 0.30,
-        child: PageView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: _headingController,
-          itemCount: value.coffees!.length + 1,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            value.index = index;
-            if (index == value.coffees!.length) {
-              return const SizedBox.shrink();
-            }
-            return Column(
-              children: [
-                Expanded(
-                  child: _name(value, index, context),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: _price(value, index, context),
-                )
-              ],
-            );
-          },
-        ),
+  SizedBox _coffeNameBuilder(Size size, CoffeListViewModel value) {
+    return SizedBox(
+      height: size.height * 0.30,
+      child: PageView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _headingController,
+        itemCount: value.coffees!.length + 1,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          value.index = index;
+          if (index == value.coffees!.length) {
+            return const SizedBox.shrink();
+          }
+          return Expanded(
+            child: Column(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [_name(value, index, context), _price(value, index, context)],
+            ),
+          );
+        },
       ),
     );
   }

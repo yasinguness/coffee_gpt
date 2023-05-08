@@ -41,9 +41,9 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Expanded(flex: 4, child: _coffeNameText(context)),
+                    Expanded(flex: 3, child: _coffeNameText(context)),
                     Expanded(flex: 3, child: _questionText(context)),
-                    Expanded(flex: 3, child: _noThanksButton()),
+                    Expanded(flex: 2, child: _noThanksButton()),
                   ],
                 ),
               ),
