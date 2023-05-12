@@ -4,17 +4,16 @@ import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
-import 'package:coffe_app/network/models/coffee.dart';
-import 'package:coffe_app/network/models/order.dart';
-import 'package:coffe_app/network/models/treat.dart';
+import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/network/models/order/order.dart';
 import 'package:coffe_app/network/services/order/order_service.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 import 'package:flutter/material.dart';
 
 class CheckoutView extends StatefulWidget {
-  final Treat? treat;
-  final Coffee? coffee;
+  final ProductModel? treat;
+  final ProductModel? coffee;
   const CheckoutView({super.key, this.treat, this.coffee});
 
   @override
@@ -64,7 +63,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
                                 ],
                               );
                             },
-                            itemCount: value.order?.coffeeList?.length,
+                            //itemCount: value.order?.coffeeList?.length,
                           ),
                           const Spacer(),
                           _checkoutButton(value)
@@ -80,11 +79,11 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         orderServices: locator<OrderService>(),
         coffee: widget.coffee!,
         treat: widget.treat,
-        order: Order(),
-        listTreat: <Treat>[],
-        listCoffee: <Coffee>[],
+        order: OrderModel(),
+        listTreat: <ProductModel>[],
+        listCoffee: <ProductModel>[],
       ),
-      onModelReady: (p0) => p0.getCoffeePrice(),
+      //onModelReady: (p0) => p0.getCoffeePrice(),
     );
   }
 
@@ -232,7 +231,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   Text _coffeName(BuildContext context, CheckoutViewModel model, int index) {
     return Text(
-      model.order!.coffeeList![index].name!,
+      /* model.order!.coffeeList![index].name! */ " asd",
       style: Theme.of(context)
           .textTheme
           .subtitle1!

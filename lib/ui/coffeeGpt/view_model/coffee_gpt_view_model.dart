@@ -1,8 +1,8 @@
-import 'package:coffe_app/network/models/chat_model.dart';
+import 'package:coffe_app/network/models/gpt/chat_model.dart';
 import 'package:coffe_app/network/services/chat_gpt/chat_gpt_service.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 
-class CoffeGptViewModel extends ServiceModel {
+class CoffeGptViewModel extends BaseModel {
   ChatGptServices? chatGptServices;
 
   CoffeGptViewModel({this.chatGptServices});

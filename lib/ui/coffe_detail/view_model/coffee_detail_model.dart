@@ -1,22 +1,16 @@
-import 'dart:async';
-
-import 'package:coffe_app/network/models/coffee.dart';
-import 'package:coffe_app/network/models/order.dart';
-import 'package:coffe_app/network/services/coffee/coffee_services.dart';
+import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
-import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 
-class CoffeeDetailViewModel extends ServiceModel {
-  CoffeeServices? coffeeServices;
-  //List<Order>? orderList;
-  Order? order;
-  CheckoutViewModel? checkoutVm;
-  CoffeeDetailViewModel({this.coffeeServices, this.order, this.checkoutVm});
+class CoffeeDetailViewModel extends BaseModel {
+  ProductServices? coffeeServices;
+  CoffeeDetailViewModel({
+    this.coffeeServices,
+  });
 
   var counter = 1;
-  Coffee? coffee;
-  double? _price;
 
+  double? _price;
   double get price => _price!;
 
   void incrementCounter() {
@@ -37,25 +31,21 @@ class CoffeeDetailViewModel extends ServiceModel {
     setBusy(false);
   }
 
-  double getCoffeePrice(String size) {
+  double getCoffeePrice(ProductModel coffee, String size) {
     setBusy(true);
-    coffee!.coffeeSize = size;
-    if (coffee!.coffeeSize == 'S') {
-      return coffee!.smallPrice!;
-    } else if (coffee!.coffeeSize == 'L') {
-      return coffee!.largePrice!;
+    coffee.size = size;
+    if (coffee.size == 'S') {
+      setBusy(false);
+
+      return coffee.smallPrice!;
+    } else if (coffee.size == 'L') {
+      setBusy(false);
+
+      return coffee.largePrice!;
     } else {
-      return coffee!.mediumPrice!;
+      setBusy(false);
+
+      return coffee.price!;
     }
-  }
-
-  void addList() {
-    order?.coffeeList?.add(coffee!);
-  }
-
-  Future getCoffee(String id, String sizeCoffe) async {
-    coffee = await coffeeServices!.getCoffeeId(id);
-    price = getCoffeePrice(sizeCoffe);
-    setBusy(false); // notifyListeners
   }
 }

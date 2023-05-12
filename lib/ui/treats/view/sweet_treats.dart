@@ -4,13 +4,12 @@ import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
-import 'package:coffe_app/network/models/coffee.dart';
+import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
-import 'package:coffe_app/ui/treats/view/treats_list_view.dart';
 import 'package:flutter/material.dart';
 
 class SweetTreatsWidget extends StatefulWidget {
-  final Coffee? coffee;
+  final ProductModel? coffee;
   const SweetTreatsWidget({
     super.key,
     this.coffee,
@@ -30,7 +29,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
       body: Stack(
         children: [
           _buildBackground(),
-          TreatsListView(coffee: widget.coffee!),
+          //TreatsListView(coffee: widget.coffee!),
           Align(
             alignment: Alignment.topRight,
             child: Padding(

@@ -6,16 +6,15 @@ import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
-import 'package:coffe_app/network/models/coffee.dart';
-import 'package:coffe_app/network/models/order.dart';
-import 'package:coffe_app/network/services/coffee/coffee_services.dart';
+import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/coffe_detail/view_model/coffee_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class CoffeeDetailView extends StatefulWidget {
-  final Coffee? coffee;
+  final ProductModel? coffee;
   const CoffeeDetailView({super.key, this.coffee});
 
   @override
@@ -29,7 +28,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
     return BaseView<CoffeeDetailViewModel>(
         routeObserver: routeObserver,
         onDispose: () => routeObserver.unsubscribe(this),
-        onModelReady: (p0) => p0.getCoffee(widget.coffee!.id!, widget.coffee!.coffeeSize!),
+        //onModelReady: (p0) => p0.getCoffee(widget.coffee!.id!, widget.coffee!.size!),
         builder: (context, value, widget) => value.busy
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -42,7 +41,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
                   children: [_buildBackground(), _coffeBody(context, value, size), _positionedImage(size, value)],
                 ),
               ),
-        model: CoffeeDetailViewModel(coffeeServices: locator<CoffeeServices>(), order: Order()));
+        model: CoffeeDetailViewModel(coffeeServices: locator<ProductServices>()));
   }
 
   Padding _coffeBody(BuildContext context, CoffeeDetailViewModel value, Size size) {
@@ -152,8 +151,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
           ),
         ),
         onPressed: () {
-          value.addList();
-          Navigator.pushNamed(context, RouteConst.sweetTreatsView, arguments: value.coffee);
+          Navigator.pushNamed(context, RouteConst.sweetTreatsView, arguments: widget.coffee);
         },
         child: _elevatedButtonText(context));
   }
@@ -188,9 +186,9 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
           width: size.width * 0.01,
         ),
         Text(
-          model.coffee?.coffeeSize == 'M'
+          widget.coffee?.size == 'M'
               ? "Medium"
-              : model.coffee?.coffeeSize == 'L'
+              : widget.coffee?.size == 'L'
                   ? "Large"
                   : "Small",
           style: Theme.of(context)
@@ -207,8 +205,8 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
       children: ['S', 'M', 'L']
           .map((sizeCoffe) => GestureDetector(
                 onTap: () {
-                  model.getCoffee(
-                      model.coffee!.id!, sizeCoffe); // Kahvelerin hangi boyuttda olduğuna göre fiyatı belirtiyor.
+                  model.getCoffeePrice(
+                      widget.coffee!, sizeCoffe); // Kahvelerin hangi boyuttda olduğuna göre fiyatı belirtiyor.
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
@@ -216,9 +214,9 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
                     padding: CoffeePading.instance.mediumHorizontalLowVertical,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
-                      color: model.coffee?.coffeeSize == sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
+                      color: widget.coffee?.size == sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
                       border: Border.all(
-                        color: model.coffee?.coffeeSize != sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
+                        color: widget.coffee?.size != sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,
                         width: 2,
                       ),
                     ),
@@ -237,7 +235,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
       style: Theme.of(context).textTheme.subtitle1!.copyWith(
           fontSize: 18,
           fontWeight: FontWeight.w400,
-          color: model.coffee?.coffeeSize != sizeCoffe ? CoffeeColors.kTitleColor : Colors.white),
+          color: widget.coffee?.size != sizeCoffe ? CoffeeColors.kTitleColor : Colors.white),
       child: Text(
         sizeCoffe,
       ),
@@ -248,7 +246,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        "${model.coffee?.coffeeSize == 'M' ? widget.coffee?.mediumPrice : model.coffee?.coffeeSize == 'L' ? widget.coffee?.largePrice : widget.coffee!.smallPrice}",
+        "${widget.coffee?.size == 'M' ? widget.coffee?.price : widget.coffee?.size == 'L' ? widget.coffee?.largePrice : widget.coffee!.smallPrice}",
         style: Theme.of(context).textTheme.headline1,
       ),
     );
@@ -294,9 +292,9 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
           tag: "name${widget.coffee!.id!.toString()}",
           child: AnimatedScale(
             duration: const Duration(milliseconds: 400),
-            scale: model.coffee?.coffeeSize == 'M'
+            scale: widget.coffee?.size == 'M'
                 ? 1.36
-                : model.coffee?.coffeeSize == 'L'
+                : widget.coffee?.size == 'L'
                     ? 1.5
                     : 1.2,
             curve: Curves.easeOutBack,

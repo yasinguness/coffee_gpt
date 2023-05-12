@@ -1,11 +1,10 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/coffee_padding.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/scrool.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
-import 'package:coffe_app/network/models/coffee.dart';
-import 'package:coffe_app/network/services/treat/treat_service.dart';
+import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
 import 'package:coffe_app/ui/treats/view_model/treats_view_model.dart';
@@ -13,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class TreatsListView extends StatefulWidget {
-  final Coffee? coffee;
+  final ProductModel? coffee;
   const TreatsListView({super.key, this.coffee});
 
   @override
@@ -86,10 +85,10 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
                     height: size.height * 0.7,
                     child: _coffeImage(),
                   ),
-                  Align(
+/*                   Align(
                     alignment: Alignment.bottomRight,
                     child: _treatsCalori(context, value),
-                  ),
+                  ), */
                   Transform.scale(
                     alignment: Alignment.bottomCenter,
                     scale: 2.0,
@@ -99,7 +98,8 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
                 ],
               ),
         onModelReady: (p0) => p0.fetchTreats(),
-        model: TreatsViewModel(treatService: locator<TreatService>())); //TODO:Neden provider of context yapıyoruz.
+        model:
+            TreatsViewModel(productServices: locator<ProductServices>())); //TODO:Neden provider of context yapıyoruz.
   }
 
   Align _treatsPrice(BuildContext context, TreatsViewModel treat) {
@@ -150,7 +150,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         ));
   }
 
-  SafeArea _treatsCalori(BuildContext context, TreatsViewModel treat) {
+/*   SafeArea _treatsCalori(BuildContext context, TreatsViewModel treat) {
     return SafeArea(
         child: Padding(
       padding: CoffeePading.instance.highHorizontalMediumVertical,
@@ -160,7 +160,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         textAlign: TextAlign.right,
       ),
     ));
-  }
+  } */
 
   PageView _treatsList(TreatsViewModel treat) {
     return PageView.builder(

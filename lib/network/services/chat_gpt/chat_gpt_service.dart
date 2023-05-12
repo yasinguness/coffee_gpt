@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:coffe_app/common/constants/chat_api_const.dart';
-import 'package:coffe_app/network/models/chat_model.dart';
-import 'package:coffe_app/network/models/models_model.dart';
+import 'package:coffe_app/network/models/gpt/chat_model.dart';
+import 'package:coffe_app/network/models/gpt/models_model.dart';
 import 'package:http/http.dart' as http;
 
 class ChatGptServices {

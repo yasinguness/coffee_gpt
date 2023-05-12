@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:coffe_app/network/models/treat.dart';
-import 'package:coffe_app/network/services/treat/treat_service.dart';
+import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 
-class TreatsViewModel extends ServiceModel {
-  final TreatService? treatService;
+class TreatsViewModel extends BaseModel {
+  final ProductServices? productServices;
 
-  TreatsViewModel({this.treatService});
+  TreatsViewModel({this.productServices});
   int? index = 0;
 
-  List<Treat>? treats;
+  List<ProductModel>? treats;
 
   Future fetchTreats() async {
     setBusy(true);
-    treats = await treatService!.getTreatList();
+    //treats = await treatService!.getTreatList();
     setBusy(false);
   }
 }

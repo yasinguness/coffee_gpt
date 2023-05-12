@@ -1,24 +1,32 @@
-import 'dart:convert';
+import 'dart:io';
 
 import 'package:coffe_app/common/constants/service_const.dart';
-import 'package:coffe_app/network/models/order.dart';
-import 'package:http/http.dart' as http;
+import 'package:coffe_app/common/service/base_service.dart';
+import 'package:coffe_app/network/models/order/order.dart';
 
-class OrderService {
-  var htt = http.Client();
-  Future<void> postOrder(Order order) async {
-    final url = Uri.parse('$BASE_URL/order');
-    final headers = {'Content-Type': 'application/json'};
-    final jsonBody = jsonEncode(order.toJson());
+class OrderService extends BaseService {
+  Future<List<OrderModel>?> fetchOrders() async {
+    final response = await dio.get('$BASE_URL/order/get-order');
 
-    final response = await http.post(url, headers: headers, body: jsonBody);
+    if (response.statusCode == HttpStatus.ok) {
+      final datas = response.data['data'];
+      if (datas is List) {
+        return datas.map((e) => OrderModel.fromJson(e)).toList();
+      }
+    }
+    return null;
+  }
 
-    if (response.statusCode == 201) {
-      print("Post succesful");
-    } else {
-      print(response.statusCode);
-      throw Exception("Hata");
-      // hata durumu
+  Future postOrder(OrderModel order) async {
+    try {
+      final response = await dio.post<dynamic>('$BASE_URL/product/create', data: order.toJson());
+      if (response.data['success']) {
+        var data = response.data;
+        OrderModel.fromJson(data);
+      }
+    } catch (e) {
+      print("Sipariş verilemedi");
+      rethrow;
     }
   }
 }

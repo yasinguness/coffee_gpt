@@ -1,5 +1,5 @@
 import 'package:coffe_app/common/constants/router_constants.dart';
-import 'package:coffe_app/network/models/coffee.dart';
+import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
 import 'package:coffe_app/ui/coffe_detail/view/coffee_detail_view.dart';
 import 'package:coffe_app/ui/coffeeGpt/view/chat_screen.dart';
@@ -40,13 +40,13 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       var arguments = settings.arguments;
       return MaterialPageRoute(
           builder: (context) => CoffeeDetailView(
-                coffee: arguments as Coffee,
+                coffee: arguments as ProductModel,
               ));
 
     case RouteConst.sweetTreatsView:
       var arguments = settings.arguments;
       return MaterialPageRoute(
-        builder: (context) => SweetTreatsWidget(coffee: arguments as Coffee),
+        builder: (context) => SweetTreatsWidget(coffee: arguments as ProductModel),
       );
 
     case RouteConst.checkoutView:

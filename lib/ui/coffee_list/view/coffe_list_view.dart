@@ -5,10 +5,10 @@ import 'package:coffe_app/common/constants/scrool.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
-import 'package:coffe_app/network/services/coffee/coffee_services.dart';
+import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/coffeeGpt/view/chat_screen.dart';
-import 'package:coffe_app/ui/coffee_list/view_model/coffee_model.dart';
+import 'package:coffe_app/ui/coffee_list/view_model/coffee_list_view_model.dart';
 import 'package:flutter/material.dart';
 
 class CoffeeListView extends StatefulWidget {
@@ -60,14 +60,14 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
     var size = MediaQuery.of(context).size;
     return BaseView<CoffeListViewModel>(
       onModelReady: (p0) => p0.fetchCoffees(),
-      model: CoffeListViewModel(coffeeServices: locator<CoffeeServices>()),
+      model: CoffeListViewModel(coffeeServices: locator<ProductServices>()),
       builder: (context, value, widget) => value.busy
           ? const Center(child: CircularProgressIndicator())
           : Scaffold(
               appBar: const CustomAppBar(),
               body: Stack(
                 children: [
-                  ..._backgroundAlign(size),
+                  _backgroundAlign(size),
                   _coffeListBuilder(value),
                   Padding(
                     padding: CoffeePading.instance.low,
@@ -133,11 +133,9 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
           if (index == value.coffees!.length) {
             return const SizedBox.shrink();
           }
-          return Expanded(
-            child: Column(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [_name(value, index, context), _price(value, index, context)],
-            ),
+          return Column(
+            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [_name(value, index, context), _price(value, index, context)],
           );
         },
       ),
@@ -158,7 +156,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: Text(
-        "${value.coffees![index].mediumPrice} TL",
+        "${value.coffees![index].price} TL",
         style: Theme.of(context).textTheme.headline2!.copyWith(fontWeight: FontWeight.w500, fontSize: 26),
       ),
     );
@@ -178,27 +176,6 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
           if (index == 0) {
             return const SizedBox.shrink();
           }
-          /* if (index == value.coffees!.length) {
-            return Container(
-              color: Colors.red,
-            );
-          } */
-          /*  if (index == value.coffees!.length) {
-            return Container(
-              width: 50,
-              height: 50,
-              color: Colors.red,
-              child: Column(
-                children: [
-                  const Text("Hangi kahveyi içeceğine karar veremiyormusun ? Hemen tıkla !"),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  FloatingActionButton(onPressed: () {}, child: const Icon(Icons.account_circle_outlined)),
-                ],
-              ),
-            );
-          } */
           final double distance = (_currentPosition - index + 1).abs();
           final isNotOnScreen = (_currentPosition - index + 1) > 0;
           final double scale = 1 - distance * .345 * (isNotOnScreen ? 1 : -1);
@@ -238,16 +215,14 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
       },
       tag: "name${value.coffees![index - 1].id.toString()}",
       child: Image.asset(
-        "assets/coffee/GLASS-$index.png",
+        "assets/coffee/GLASS-1.png",
         fit: BoxFit.fitHeight,
       ),
     );
   }
 
-  List<Widget> _backgroundAlign(Size size) {
-    return [
-      _bottomCenterAlign(size), /*  _leftCenterAlign(), _rightBottomAlign(size) */
-    ];
+  Widget _backgroundAlign(Size size) {
+    return _bottomCenterAlign(size); /*  _leftCenterAlign(), _rightBottomAlign(size) */
   }
 
   Align _bottomCenterAlign(Size size) {

@@ -1,4 +1,8 @@
 import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/locator.dart';
+import 'package:coffe_app/network/services/customer/customer_service.dart';
+import 'package:coffe_app/ui/base/base_view.dart';
+import 'package:coffe_app/ui/login/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
 
 class LoginView extends StatelessWidget {
@@ -7,16 +11,21 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: SizedBox(
-        width: double.infinity,
-        height: size.height * 1,
-        child: Stack(children: [_backgroundImage(size), _textFields(size), _loginButton(size, context)]),
+    return BaseView<LoginViewModel>(
+      model: LoginViewModel(customerService: locator<CustomerService>()),
+      onModelReady: (p0) => p0.init(),
+      builder: (context, value, widget) => Scaffold(
+        body: SizedBox(
+          width: double.infinity,
+          height: size.height * 1,
+          child:
+              Stack(children: [_backgroundImage(size), _textFields(size, value), _loginButton(size, context, value)]),
+        ),
       ),
     );
   }
 
-  Positioned _textFields(Size size) {
+  Positioned _textFields(Size size, LoginViewModel model) {
     return Positioned(
       top: size.height * 0.25,
       left: 0,
@@ -33,12 +42,13 @@ class LoginView extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(blurRadius: 10),
                   ]),
-              child: const TextField(
-                  decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                hintText: "İsminizi Giriniz",
-              )),
+              child: TextField(
+                  controller: model.controller,
+                  decoration: const InputDecoration(
+                    enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                    hintText: "İsminizi Giriniz",
+                  )),
             ),
           ),
           Padding(
@@ -50,18 +60,16 @@ class LoginView extends StatelessWidget {
                   boxShadow: const [
                     BoxShadow(blurRadius: 10),
                   ]),
-              child: const TextField(
-                  enabled: false,
-                  readOnly: true,
-                  decoration: InputDecoration(
+              child: TextField(
+                  controller: model.qrcontroller,
+                  //enabled: false,
+                  //readOnly: true,
+                  decoration: const InputDecoration(
                       disabledBorder: OutlineInputBorder(
                         borderSide: BorderSide.none,
                       ),
-                      labelText: "Masa Numaranız : 12",
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold)
-                      //enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                      //focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                      )),
+                      labelText: "Masa Numaranız",
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
             ),
           ),
         ],
@@ -69,7 +77,7 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Positioned _loginButton(Size size, BuildContext context) {
+  Positioned _loginButton(Size size, BuildContext context, LoginViewModel model) {
     return Positioned(
       left: size.width * 0.1,
       right: size.width * 0.1,
@@ -79,6 +87,7 @@ class LoginView extends StatelessWidget {
           height: size.width * 0.15,
           child: ElevatedButton(
             onPressed: () {
+              //model.createCustomer();
               Navigator.pushNamed(context, RouteConst.coffeeListView);
             },
             style: ElevatedButton.styleFrom(

@@ -1,20 +1,16 @@
 import 'package:coffe_app/network/services/chat_gpt/chat_gpt_service.dart';
-import 'package:coffe_app/network/services/coffee/coffee_services.dart';
+import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/network/services/order/order_service.dart';
-import 'package:coffe_app/network/services/treat/treat_service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 List<SingleChildWidget> providers = [...independentServices, ...dependentServices, ...uiConsumableProviders];
 List<SingleChildWidget> independentServices = [
-  Provider<CoffeeServices>(
-    create: (context) => CoffeeServices(),
+  Provider<ProductServices>(
+    create: (context) => ProductServices(),
   ),
   Provider<OrderService>(
     create: (context) => OrderService(),
-  ),
-  Provider<TreatService>(
-    create: (context) => TreatService(),
   ),
   Provider<ChatGptServices>(
     create: (context) => ChatGptServices(),
