@@ -5,14 +5,14 @@ import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/network/models/product/product.dart';
-import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
+import 'package:coffe_app/ui/treats/view/treats_list_view.dart';
 import 'package:flutter/material.dart';
 
 class SweetTreatsWidget extends StatefulWidget {
-  final ProductModel? coffee;
+  final ProductModel? produtModel;
   const SweetTreatsWidget({
     super.key,
-    this.coffee,
+    this.produtModel,
   });
 
   @override
@@ -29,7 +29,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
       body: Stack(
         children: [
           _buildBackground(),
-          //TreatsListView(coffee: widget.coffee!),
+          TreatsListView(productModel: widget.produtModel!),
           Align(
             alignment: Alignment.topRight,
             child: Padding(
@@ -55,9 +55,9 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
 
   Hero _coffeNameText(BuildContext context) {
     return Hero(
-        tag: "name${widget.coffee!.name!.toString()}", //CoffeNameTag
+        tag: "name${widget.produtModel!.name!.toString()}", //CoffeNameTag
         child: Text(
-          widget.coffee!.name!,
+          widget.produtModel!.name!,
           style: Theme.of(context).textTheme.headline1,
           textAlign: TextAlign.right,
         ));
@@ -80,10 +80,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
       alignment: Alignment.centerRight,
       child: ElevatedButton(
         onPressed: () {
-          Navigator.pushNamed(context, RouteConst.checkoutView,
-              arguments: CheckoutView(
-                coffee: widget.coffee,
-              ));
+          Navigator.pushNamed(context, RouteConst.checkoutView, arguments: widget.produtModel);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,

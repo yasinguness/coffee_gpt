@@ -1,7 +1,10 @@
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/themes/coffe_theme.dart';
+import 'package:coffe_app/common/provider/basket_provider.dart';
+import 'package:coffe_app/common/provider/coffe_provider.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'router.dart' as router;
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
@@ -18,12 +21,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'Material App',
-      onGenerateRoute: router.generateRoute,
-      initialRoute: RouteConst.homeView,
-      theme: coffeeTheme,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<BasketProvider>(create: (context) => BasketProvider()),
+        ChangeNotifierProvider<CoffeeProvider>(create: (context) => CoffeeProvider()),
+      ],
+      child: MaterialApp(
+        navigatorKey: navigatorKey,
+        title: 'Material App',
+        onGenerateRoute: router.generateRoute,
+        initialRoute: RouteConst.homeView,
+        theme: coffeeTheme,
+      ),
     );
   }
 }

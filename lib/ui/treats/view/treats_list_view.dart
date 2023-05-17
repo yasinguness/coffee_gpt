@@ -1,19 +1,20 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/scrool.dart';
+import 'package:coffe_app/common/provider/basket_provider.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
 import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
-import 'package:coffe_app/ui/checkout/view/checkout_view.dart';
 import 'package:coffe_app/ui/treats/view_model/treats_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 
 class TreatsListView extends StatefulWidget {
-  final ProductModel? coffee;
-  const TreatsListView({super.key, this.coffee});
+  final ProductModel? productModel;
+  const TreatsListView({super.key, this.productModel});
 
   @override
   State<TreatsListView> createState() => _TreatsListViewState();
@@ -55,6 +56,8 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    var basket = Provider.of<BasketProvider>(context);
+
     return BaseView<TreatsViewModel>(
         routeObserver: routeObserver,
         onDispose: () => routeObserver.unsubscribe(this),
@@ -94,7 +97,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
                     scale: 2.0,
                     child: _treatsList(value),
                   ),
-                  _elevatedButton(size, value),
+                  _elevatedButton(size, value, basket),
                 ],
               ),
         onModelReady: (p0) => p0.fetchTreats(),
@@ -197,17 +200,15 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
     );
   }
 
-  Positioned _elevatedButton(Size size, TreatsViewModel treat) {
+  Positioned _elevatedButton(Size size, TreatsViewModel treat, BasketProvider basket) {
     return Positioned(
         right: size.width * 0.2,
         bottom: size.height * 0.25,
         child: ElevatedButton(
           onPressed: () {
-            Navigator.pushNamed(context, RouteConst.checkoutView,
-                arguments: CheckoutView(
-                  coffee: widget.coffee,
-                  treat: treat.treats![treat.index!],
-                ));
+            //TODO: Treat Price
+            //basket.addProducts(treat.treats![treat.index!]);
+            Navigator.pushNamed(context, RouteConst.checkoutView, arguments: widget.productModel);
           },
           style: ElevatedButton.styleFrom(
             shape: const CircleBorder(),

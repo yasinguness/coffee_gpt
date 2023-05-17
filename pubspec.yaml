@@ -47,6 +47,8 @@ dependencies:
   get_it: ^7.2.0
   dio: ^5.1.1
   build_runner: ^2.3.3
+  badges: ^3.1.1
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,8 @@ import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/coffee_padding.dart';
 import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/text_const.dart';
+import 'package:coffe_app/common/provider/basket_provider.dart';
+import 'package:coffe_app/common/provider/coffe_provider.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
@@ -12,6 +14,7 @@ import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/coffe_detail/view_model/coffee_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 
 class CoffeeDetailView extends StatefulWidget {
   final ProductModel? coffee;
@@ -25,6 +28,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return BaseView<CoffeeDetailViewModel>(
         routeObserver: routeObserver,
         onDispose: () => routeObserver.unsubscribe(this),
@@ -41,7 +45,10 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
                   children: [_buildBackground(), _coffeBody(context, value, size), _positionedImage(size, value)],
                 ),
               ),
-        model: CoffeeDetailViewModel(coffeeServices: locator<ProductServices>()));
+        model: CoffeeDetailViewModel(
+            coffeeServices: locator<ProductServices>(),
+            basketProvider: Provider.of<BasketProvider>(context),
+            coffeeProvider: Provider.of<CoffeeProvider>(context)));
   }
 
   Padding _coffeBody(BuildContext context, CoffeeDetailViewModel value, Size size) {
@@ -103,7 +110,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         GestureDetector(
-          onTap: model.decrementCounter,
+          onTap: () => model.decrementCounter(widget.coffee!),
           child: Container(
             decoration: BoxDecoration(
                 color: CoffeeColors.kTitleColor,
@@ -119,12 +126,12 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Text(
-            model.counter < 1 ? "1" : model.counter.toString(),
+            widget.coffee!.quantitiy! < 1 ? "1" : widget.coffee!.quantitiy.toString(),
             style: Theme.of(context).textTheme.headline5,
           ),
         ),
         GestureDetector(
-          onTap: model.incrementCounter,
+          onTap: () => model.incrementCounter(widget.coffee!),
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
@@ -151,6 +158,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
           ),
         ),
         onPressed: () {
+          value.addToBasket(widget.coffee!);
           Navigator.pushNamed(context, RouteConst.sweetTreatsView, arguments: widget.coffee);
         },
         child: _elevatedButtonText(context));
@@ -205,8 +213,8 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
       children: ['S', 'M', 'L']
           .map((sizeCoffe) => GestureDetector(
                 onTap: () {
-                  model.getCoffeePrice(
-                      widget.coffee!, sizeCoffe); // Kahvelerin hangi boyuttda olduğuna göre fiyatı belirtiyor.
+                  model.coffeeProvider!.selectedSize(widget.coffee!, sizeCoffe);
+                  // Kahvelerin hangi boyuttda olduğuna göre fiyatı belirtiyor.
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),

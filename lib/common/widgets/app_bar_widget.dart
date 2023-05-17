@@ -1,6 +1,10 @@
+import 'package:badges/badges.dart';
 import 'package:coffe_app/common/constants/coffee_colors.dart';
+import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/common/provider/basket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key, this.actions, this.leading, this.elevation, this.backgroundColor, this.height = 60});
@@ -11,6 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double? height;
   @override
   Widget build(BuildContext context) {
+    var basket = Provider.of<BasketProvider>(context);
     return AppBar(
       backgroundColor: backgroundColor ?? Colors.transparent,
       elevation: elevation ?? 0,
@@ -26,13 +31,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               )),
       actions: actions ??
           [
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  FeatherIcons.shoppingBag,
-                  color: CoffeeColors.black,
-                  size: 30,
-                ))
+            Badge(
+              badgeStyle: const BadgeStyle(
+                badgeColor: CoffeeColors.kBrownColor,
+              ),
+              position: BadgePosition.topEnd(end: 3, top: 0),
+              badgeContent: Text(
+                basket.basketCounter.toString(),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, RouteConst.checkoutView);
+                  },
+                  icon: const Icon(
+                    FeatherIcons.shoppingCart,
+                    color: CoffeeColors.black,
+                    size: 30,
+                  )),
+            )
           ],
     );
   }

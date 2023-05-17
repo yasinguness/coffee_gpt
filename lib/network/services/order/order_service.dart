@@ -29,4 +29,18 @@ class OrderService extends BaseService {
       rethrow;
     }
   }
+
+  Future<OrderModel?> getOrderById(String id) async {
+    try {
+      final response = await dio.get("$BASE_URL/order/$id");
+      if (response.statusCode == HttpStatus.ok) {
+        final data = response.data['data'][0];
+
+        return OrderModel.fromJson(data);
+      }
+    } catch (e) {
+      print("Servis hata");
+    }
+    return null;
+  }
 }

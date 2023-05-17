@@ -1,51 +1,27 @@
+import 'package:coffe_app/common/provider/basket_provider.dart';
+import 'package:coffe_app/common/provider/coffe_provider.dart';
 import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 
 class CoffeeDetailViewModel extends BaseModel {
   ProductServices? coffeeServices;
-  CoffeeDetailViewModel({
-    this.coffeeServices,
-  });
+  BasketProvider? basketProvider;
+  CoffeeProvider? coffeeProvider;
+  CoffeeDetailViewModel({this.coffeeServices, this.basketProvider, this.coffeeProvider});
 
-  var counter = 1;
-
-  double? _price;
-  double get price => _price!;
-
-  void incrementCounter() {
-    counter++;
-    setBusy(false);
+  void incrementCounter(ProductModel product) {
+    coffeeProvider!.incrementCounter(product);
   }
 
-  void decrementCounter() {
-    if (counter < 1) {
-      counter = 1;
-    }
-    counter--;
-    setBusy(false);
+  void decrementCounter(ProductModel product) {
+    coffeeProvider!.decrementCounter(product);
   }
 
-  set price(double value) {
-    _price = value;
-    setBusy(false);
-  }
-
-  double getCoffeePrice(ProductModel coffee, String size) {
-    setBusy(true);
-    coffee.size = size;
-    if (coffee.size == 'S') {
-      setBusy(false);
-
-      return coffee.smallPrice!;
-    } else if (coffee.size == 'L') {
-      setBusy(false);
-
-      return coffee.largePrice!;
-    } else {
-      setBusy(false);
-
-      return coffee.price!;
+  void addToBasket(ProductModel coffee) {
+    if (coffeeProvider?.selectedSize != null) {
+      double price = coffeeProvider!.getCoffeePrice(coffee);
+      basketProvider?.addProductToBasket(coffee, price);
     }
   }
 }

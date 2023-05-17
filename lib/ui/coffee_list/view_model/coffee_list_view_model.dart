@@ -11,7 +11,7 @@ class CoffeListViewModel extends BaseModel {
   List<ProductModel>? coffees;
   Future fetchCoffees() async {
     setBusy(true);
-    coffees = await coffeeServices!.fetchProducts();
+    coffees = await coffeeServices!.getCoffee();
     setBusy(false);
   }
 }

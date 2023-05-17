@@ -14,7 +14,7 @@ class TreatsViewModel extends BaseModel {
 
   Future fetchTreats() async {
     setBusy(true);
-    //treats = await treatService!.getTreatList();
+    treats = await productServices!.getSweet();
     setBusy(false);
   }
 }

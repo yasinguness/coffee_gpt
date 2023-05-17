@@ -1,20 +1,19 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/text_const.dart';
+import 'package:coffe_app/common/provider/basket_provider.dart';
+import 'package:coffe_app/common/provider/coffe_provider.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
-import 'package:coffe_app/network/models/product/product.dart';
-import 'package:coffe_app/network/models/order/order.dart';
 import 'package:coffe_app/network/services/order/order_service.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CheckoutView extends StatefulWidget {
-  final ProductModel? treat;
-  final ProductModel? coffee;
-  const CheckoutView({super.key, this.treat, this.coffee});
+  const CheckoutView({super.key});
 
   @override
   State<CheckoutView> createState() => _CheckoutViewState();
@@ -24,77 +23,58 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
     return BaseView<CheckoutViewModel>(
       routeObserver: routeObserver,
       onDispose: () => routeObserver.unsubscribe(this),
       builder: (context, value, wtg) {
-        return value.busy
-            ? const Center(child: CircularProgressIndicator())
-            : Scaffold(
-                appBar: const CustomAppBar(),
-                body: Stack(
-                  alignment: Alignment.center,
+        return Scaffold(
+          appBar: const CustomAppBar(),
+          body: Stack(
+            alignment: Alignment.center,
+            children: [
+              _buildBackground(),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildBackground(),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _myOrders(context),
-                          SizedBox(
-                            height: size.height * 0.04,
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  _coffeCard(size, context, value, index),
-                                  const Divider(
-                                    thickness: 1,
-                                  ),
-                                  SizedBox(
-                                    height: size.height * 0.01,
-                                  ),
-                                  if (widget.treat != null) _treatCard(size, context, value),
-                                  if (widget.treat != null) const Divider(thickness: 1)
-                                ],
-                              );
-                            },
-                            //itemCount: value.order?.coffeeList?.length,
-                          ),
-                          const Spacer(),
-                          _checkoutButton(value)
-                          /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
-                        ],
-                      ),
-                    )
+                    _myOrders(context),
+                    SizedBox(
+                      height: size.height * 0.04,
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            _coffeCard(size, context, value, index),
+                            const Divider(
+                              thickness: 1,
+                            ),
+                            SizedBox(
+                              height: size.height * 0.01,
+                            ),
+                          ],
+                        );
+                      },
+                      itemCount: value.basketProvider!.basketProducts?.length,
+                    ),
+                    const Spacer(),
+                    _checkoutButton(value)
+                    /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
                   ],
                 ),
-              );
+              )
+            ],
+          ),
+        );
       },
       model: CheckoutViewModel(
         orderServices: locator<OrderService>(),
-        coffee: widget.coffee!,
-        treat: widget.treat,
-        order: OrderModel(),
-        listTreat: <ProductModel>[],
-        listCoffee: <ProductModel>[],
+        basketProvider: Provider.of<BasketProvider>(context),
+        coffeeProvider: Provider.of<CoffeeProvider>(context),
       ),
       //onModelReady: (p0) => p0.getCoffeePrice(),
-    );
-  }
-
-  Container _treatCard(Size size, BuildContext context, CheckoutViewModel value) {
-    return Container(
-      height: size.height * 0.1,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.transparent),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_treatImage(size), _treatNameAndQuantity(context, value, size), _treatPrice(context, size)],
-      ),
     );
   }
 
@@ -107,7 +87,11 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_coffeImage(size), _coffeeNameAndQuantity(context, value, index), _coffePrice(value, context)],
+        children: [
+          _coffeImage(size, index),
+          _coffeeNameAndQuantity(context, value, index),
+          _coffePrice(value, context, index)
+        ],
       ),
     );
   }
@@ -117,20 +101,10 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         flex: 3,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [_coffeName(context, value, index), _quantity(value)]));
+            children: [_coffeName(context, value, index), _quantity(value, index)]));
   }
 
-  Expanded _treatNameAndQuantity(BuildContext context, CheckoutViewModel value, Size size) {
-    return Expanded(
-      flex: 3,
-      child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        _treatName(context),
-        _quantity(value),
-      ]),
-    );
-  }
-
-  Expanded _quantity(CheckoutViewModel model) {
+  Expanded _quantity(CheckoutViewModel model, int index) {
     return Expanded(
       flex: 1,
       child: Row(
@@ -138,7 +112,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: model.decrementCounter,
+            onTap: () => model.basketProvider!.decreaseQuantity(index),
             child: Container(
               decoration: BoxDecoration(
                   color: CoffeeColors.kTitleColor,
@@ -154,12 +128,12 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Text(
-              model.counter.toString(),
+              model.basketProvider!.basketProducts![index].quantitiy.toString(),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
           GestureDetector(
-            onTap: model.incrementCounter,
+            onTap: () => model.basketProvider!.increaseQuantity(index),
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
@@ -184,14 +158,14 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     );
   }
 
-  Expanded _coffeImage(Size size) {
+  Expanded _coffeImage(Size size, int index) {
     return Expanded(
       flex: 1,
       child: Container(
         height: 50,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         child: Hero(
-            tag: "nameCoffee", //CoffeImageTag
+            tag: "nameCoffee$index", //CoffeImageTag
             child: Image.asset(
               "assets/coffee/GLASS-2.png",
               fit: BoxFit.contain,
@@ -200,26 +174,12 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     );
   }
 
-  Expanded _treatImage(Size size) {
-    return Expanded(
-      flex: 1,
-      child: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-        child: Image.asset(
-          "assets/treat/TREAT_0.png",
-          fit: BoxFit.contain,
-          width: 50,
-          height: 50,
-        ),
-      ),
-    );
-  }
-
-  Expanded _coffePrice(CheckoutViewModel model, BuildContext context) {
+  Expanded _coffePrice(CheckoutViewModel model, BuildContext context, int index) {
     return Expanded(
       flex: 1,
       child: Text(
-        "${model.price} TL",
+        //TODO: Price olayını düzelt
+        model.basketProvider!.basketProducts![index].price.toString(),
         style: Theme.of(context).textTheme.subtitle1!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
@@ -231,7 +191,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   Text _coffeName(BuildContext context, CheckoutViewModel model, int index) {
     return Text(
-      /* model.order!.coffeeList![index].name! */ " asd",
+      model.basketProvider!.basketProducts![index].name!,
       style: Theme.of(context)
           .textTheme
           .subtitle1!
@@ -239,7 +199,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     );
   }
 
-  Expanded _treatName(BuildContext context) {
+  /*  Expanded _treatName(BuildContext context) {
     return Expanded(
       flex: 1,
       child: Text(widget.treat!.name!,
@@ -249,9 +209,9 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
               .subtitle1!
               .copyWith(fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w700, color: CoffeeColors.kTitleColor)),
     );
-  }
+  } */
 
-  Expanded _treatPrice(BuildContext context, Size size) {
+/*   Expanded _treatPrice(BuildContext context, Size size) {
     return Expanded(
       flex: 1,
       child: Text("${widget.treat!.price!} TL",
@@ -261,7 +221,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
               fontWeight: FontWeight.w600,
               color: CoffeeColors.kTitleColor.withOpacity(.8))),
     );
-  }
+  } */
 
   ElevatedButton _checkoutButton(
     CheckoutViewModel model,
@@ -301,3 +261,21 @@ _buildBackground() {
     ],
   );
 }
+
+/* import 'package:coffe_app/network/models/product/product.dart';
+import 'package:flutter/material.dart';
+
+class CheckoutView extends StatelessWidget {
+  final ProductModel? productModel;
+  const CheckoutView({super.key, this.productModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.red,
+      width: 200,
+      height: 200,
+      child: Center(child: Text("${productModel!.name}")),
+    );
+  }
+} */

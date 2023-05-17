@@ -1,11 +1,11 @@
+import 'package:coffe_app/common/constants/service_const.dart';
 import 'package:dio/dio.dart';
 
 class BaseConfig {
   late Dio dio;
-  final String baseUrl = "https://yasincoffee.herokuapp.com/";
 
   BaseConfig() {
-    BaseOptions options = BaseOptions(baseUrl: baseUrl);
+    BaseOptions options = BaseOptions(baseUrl: BASE_URL);
     dio = Dio(options);
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {

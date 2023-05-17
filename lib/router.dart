@@ -46,16 +46,12 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
     case RouteConst.sweetTreatsView:
       var arguments = settings.arguments;
       return MaterialPageRoute(
-        builder: (context) => SweetTreatsWidget(coffee: arguments as ProductModel),
+        builder: (context) => SweetTreatsWidget(produtModel: arguments as ProductModel),
       );
 
     case RouteConst.checkoutView:
-      var arg = settings.arguments;
       return MaterialPageRoute(
-        builder: (context) {
-          final argu = arg as CheckoutView;
-          return CheckoutView(treat: argu.treat, coffee: argu.coffee);
-        },
+        builder: (context) => const CheckoutView(),
       );
     default:
   }

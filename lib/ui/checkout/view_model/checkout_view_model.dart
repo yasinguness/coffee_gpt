@@ -1,60 +1,25 @@
 import 'dart:async';
 
-import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/common/provider/basket_provider.dart';
+import 'package:coffe_app/common/provider/coffe_provider.dart';
 import 'package:coffe_app/network/models/order/order.dart';
+import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/network/services/order/order_service.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 
 class CheckoutViewModel extends BaseModel {
   OrderService? orderServices;
-  ProductModel coffee;
-  ProductModel? treat;
   OrderModel? order;
+  List<ProductModel>? productList;
+  CheckoutViewModel({this.productList, this.orderServices, this.order, this.coffeeProvider, this.basketProvider});
 
-  CheckoutViewModel(
-      {this.orderServices, required this.coffee, this.treat, this.order, this.listTreat, this.listCoffee});
-  double? _price;
+  CoffeeProvider? coffeeProvider;
+  BasketProvider? basketProvider;
 
-  List<ProductModel?>? listTreat;
-  List<ProductModel>? listCoffee;
-  double get price => _price!;
-  var counter = 1;
-
-  void incrementCounter() {
-    counter++;
-    setBusy(false);
-  }
-
-  void decrementCounter() {
-    counter--;
-    setBusy(false);
-  }
-
-  set price(double value) {
-    _price = value;
-    setBusy(false);
-  }
-
-  /*  double getCoffeePrice() {
+  Future getOrderById(String id) async {
     setBusy(true);
-    if (coffee.size == 'S') {
-      price = coffee.smallPrice!;
-
-      return price;
-    } else if (coffee.size == 'L') {
-      price = coffee.largePrice!;
-
-      return price;
-    } else {
-      price = coffee.mediumPrice!;
-
-      return price;
-    }
-  } */
-
-  void addTreat() {
-    listTreat?.add(treat);
-    //order!.treatList = listTreat;
+    order = await orderServices!.getOrderById(id);
+    setBusy(false);
   }
 
   Future postOrder() async {
