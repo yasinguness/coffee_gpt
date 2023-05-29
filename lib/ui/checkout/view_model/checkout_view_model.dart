@@ -2,29 +2,33 @@ import 'dart:async';
 
 import 'package:coffe_app/common/provider/basket_provider.dart';
 import 'package:coffe_app/common/provider/coffe_provider.dart';
-import 'package:coffe_app/network/models/order/order.dart';
-import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/common/provider/customer_provider.dart';
 import 'package:coffe_app/network/services/order/order_service.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 
 class CheckoutViewModel extends BaseModel {
   OrderService? orderServices;
-  OrderModel? order;
-  List<ProductModel>? productList;
-  CheckoutViewModel({this.productList, this.orderServices, this.order, this.coffeeProvider, this.basketProvider});
+  CheckoutViewModel({
+    this.orderServices,
+    this.coffeeProvider,
+    this.basketProvider,
+    this.customerProvider,
+  });
 
   CoffeeProvider? coffeeProvider;
   BasketProvider? basketProvider;
+  CustomerProvider? customerProvider;
 
-  Future getOrderById(String id) async {
+  Future postOrder(List<String?> products, String customerId) async {
     setBusy(true);
-    order = await orderServices!.getOrderById(id);
+    bool? isSuccess = await orderServices!.postOrder(products, customerId, basketProvider!.totalPrice);
+    print(isSuccess);
+    if (isSuccess!) {
+      basketProvider!.basketProducts!.clear();
+      basketProvider!.basketCounter = 0;
+    }
     setBusy(false);
-  }
 
-  Future postOrder() async {
-    setBusy(true);
-    await orderServices!.postOrder(order!);
-    setBusy(false);
+    return isSuccess;
   }
 }

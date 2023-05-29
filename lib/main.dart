@@ -2,6 +2,7 @@ import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/themes/coffe_theme.dart';
 import 'package:coffe_app/common/provider/basket_provider.dart';
 import 'package:coffe_app/common/provider/coffe_provider.dart';
+import 'package:coffe_app/common/provider/customer_provider.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<BasketProvider>(create: (context) => BasketProvider()),
         ChangeNotifierProvider<CoffeeProvider>(create: (context) => CoffeeProvider()),
+        ChangeNotifierProvider<CustomerProvider>(create: (context) => CustomerProvider()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

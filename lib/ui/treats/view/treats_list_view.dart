@@ -101,8 +101,9 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
                 ],
               ),
         onModelReady: (p0) => p0.fetchTreats(),
-        model:
-            TreatsViewModel(productServices: locator<ProductServices>())); //TODO:Neden provider of context yapıyoruz.
+        model: TreatsViewModel(
+            productServices: locator<ProductServices>(),
+            basketProvider: Provider.of<BasketProvider>(context))); //TODO:Neden provider of context yapıyoruz.
   }
 
   Align _treatsPrice(BuildContext context, TreatsViewModel treat) {
@@ -206,8 +207,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         bottom: size.height * 0.25,
         child: ElevatedButton(
           onPressed: () {
-            //TODO: Treat Price
-            //basket.addProducts(treat.treats![treat.index!]);
+            treat.addToBasket(treat.treats![treat.index!]);
             Navigator.pushNamed(context, RouteConst.checkoutView, arguments: widget.productModel);
           },
           style: ElevatedButton.styleFrom(

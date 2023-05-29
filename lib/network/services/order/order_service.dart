@@ -17,17 +17,22 @@ class OrderService extends BaseService {
     return null;
   }
 
-  Future postOrder(OrderModel order) async {
+  Future<bool?> postOrder(List<String?> products, String customerId, double totalPrice) async {
+    final postOrders = {"customer": customerId, "products": products, "totalPrice": totalPrice};
     try {
-      final response = await dio.post<dynamic>('$BASE_URL/product/create', data: order.toJson());
-      if (response.data['success']) {
-        var data = response.data;
-        OrderModel.fromJson(data);
+      final response = await dio.post(
+        '$BASE_URL/order/create',
+        data: postOrders, /*  options: Options(headers: {'Content-Type': 'application/json'}) */
+      );
+      if (response.statusCode == HttpStatus.created) {
+        print("Başarılı");
+        return true;
       }
     } catch (e) {
-      print("Sipariş verilemedi");
-      rethrow;
+      print("Sipariş verilemedi $e");
+      return false;
     }
+    return null;
   }
 
   Future<OrderModel?> getOrderById(String id) async {

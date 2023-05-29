@@ -1,9 +1,11 @@
 import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:coffe_app/common/provider/customer_provider.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/network/services/customer/customer_service.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/login/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -12,7 +14,8 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return BaseView<LoginViewModel>(
-      model: LoginViewModel(customerService: locator<CustomerService>()),
+      model: LoginViewModel(
+          customerService: locator<CustomerService>(), customerProvider: Provider.of<CustomerProvider>(context)),
       onModelReady: (p0) => p0.init(),
       builder: (context, value, widget) => Scaffold(
         body: SizedBox(
@@ -87,7 +90,7 @@ class LoginView extends StatelessWidget {
           height: size.width * 0.15,
           child: ElevatedButton(
             onPressed: () {
-              //model.createCustomer();
+              model.createCustomer();
               Navigator.pushNamed(context, RouteConst.coffeeListView);
             },
             style: ElevatedButton.styleFrom(

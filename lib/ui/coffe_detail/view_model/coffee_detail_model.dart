@@ -21,7 +21,7 @@ class CoffeeDetailViewModel extends BaseModel {
   void addToBasket(ProductModel coffee) {
     if (coffeeProvider?.selectedSize != null) {
       double price = coffeeProvider!.getCoffeePrice(coffee);
-      basketProvider?.addProductToBasket(coffee, price);
+      basketProvider?.addProductToBasket(coffee, price: price);
     }
   }
 }

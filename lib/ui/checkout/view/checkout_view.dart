@@ -1,7 +1,9 @@
 import 'package:coffe_app/common/constants/coffee_colors.dart';
+import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/provider/basket_provider.dart';
 import 'package:coffe_app/common/provider/coffe_provider.dart';
+import 'package:coffe_app/common/provider/customer_provider.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
@@ -27,53 +29,58 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       routeObserver: routeObserver,
       onDispose: () => routeObserver.unsubscribe(this),
       builder: (context, value, wtg) {
-        return Scaffold(
-          appBar: const CustomAppBar(),
-          body: Stack(
-            alignment: Alignment.center,
-            children: [
-              _buildBackground(),
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+        return value.busy
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Scaffold(
+                appBar: const CustomAppBar(),
+                body: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    _myOrders(context),
-                    SizedBox(
-                      height: size.height * 0.04,
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            _coffeCard(size, context, value, index),
-                            const Divider(
-                              thickness: 1,
-                            ),
-                            SizedBox(
-                              height: size.height * 0.01,
-                            ),
-                          ],
-                        );
-                      },
-                      itemCount: value.basketProvider!.basketProducts?.length,
-                    ),
-                    const Spacer(),
-                    _checkoutButton(value)
-                    /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
+                    _buildBackground(),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _myOrders(context),
+                          SizedBox(
+                            height: size.height * 0.04,
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  _coffeCard(size, context, value, index),
+                                  const Divider(
+                                    thickness: 1,
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                ],
+                              );
+                            },
+                            itemCount: value.basketProvider!.basketProducts?.length,
+                          ),
+                          const Spacer(),
+                          Text(value.basketProvider!.totalPrice.toString()),
+                          _checkoutButton(value)
+                          /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-        );
+              );
       },
       model: CheckoutViewModel(
-        orderServices: locator<OrderService>(),
-        basketProvider: Provider.of<BasketProvider>(context),
-        coffeeProvider: Provider.of<CoffeeProvider>(context),
-      ),
+          orderServices: locator<OrderService>(),
+          basketProvider: Provider.of<BasketProvider>(context),
+          coffeeProvider: Provider.of<CoffeeProvider>(context),
+          customerProvider: Provider.of<CustomerProvider>(context)),
       //onModelReady: (p0) => p0.getCoffeePrice(),
     );
   }
@@ -90,6 +97,19 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         children: [
           _coffeImage(size, index),
           _coffeeNameAndQuantity(context, value, index),
+          _coffeeSizeAndPrice(value, index, context),
+        ],
+      ),
+    );
+  }
+
+  Expanded _coffeeSizeAndPrice(CheckoutViewModel value, int index, BuildContext context) {
+    return Expanded(
+      flex: 3,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (value.basketProvider!.basketProducts?[index].isSweet != "sweet") _coffeSize(value, context, index),
           _coffePrice(value, context, index)
         ],
       ),
@@ -98,7 +118,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   Expanded _coffeeNameAndQuantity(BuildContext context, CheckoutViewModel value, int index) {
     return Expanded(
-        flex: 3,
+        flex: 6,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [_coffeName(context, value, index), _quantity(value, index)]));
@@ -160,7 +180,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   Expanded _coffeImage(Size size, int index) {
     return Expanded(
-      flex: 1,
+      flex: 2,
       child: Container(
         height: 50,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
@@ -179,7 +199,24 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       flex: 1,
       child: Text(
         //TODO: Price olayını düzelt
-        model.basketProvider!.basketProducts![index].price.toString(),
+        ((model.basketProvider!.basketProducts![index].quantitiy!).toDouble() *
+                (model.basketProvider!.basketProducts![index].price)!.toDouble())
+            .toString(),
+        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+            fontSize: 16,
+            letterSpacing: 1,
+            fontWeight: FontWeight.w600,
+            color: CoffeeColors.kTitleColor.withOpacity(.8)),
+      ),
+    );
+  }
+
+  Expanded _coffeSize(CheckoutViewModel model, BuildContext context, int index) {
+    return Expanded(
+      flex: 1,
+      child: Text(
+        //TODO: Price olayını düzelt
+        model.basketProvider!.basketProducts![index].size.toString(),
         style: Theme.of(context).textTheme.subtitle1!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
@@ -199,33 +236,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     );
   }
 
-  /*  Expanded _treatName(BuildContext context) {
-    return Expanded(
-      flex: 1,
-      child: Text(widget.treat!.name!,
-          textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .subtitle1!
-              .copyWith(fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w700, color: CoffeeColors.kTitleColor)),
-    );
-  } */
-
-/*   Expanded _treatPrice(BuildContext context, Size size) {
-    return Expanded(
-      flex: 1,
-      child: Text("${widget.treat!.price!} TL",
-          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-              fontSize: 16,
-              letterSpacing: 1,
-              fontWeight: FontWeight.w600,
-              color: CoffeeColors.kTitleColor.withOpacity(.8))),
-    );
-  } */
-
-  ElevatedButton _checkoutButton(
-    CheckoutViewModel model,
-  ) {
+  ElevatedButton _checkoutButton(CheckoutViewModel model) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,
@@ -234,12 +245,43 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        onPressed: () {
-          model.postOrder();
+        onPressed: () async {
+          List<String?> productIds = model.basketProvider!.basketProducts!.map((product) => product.id).toList();
+          bool isSc = await model.postOrder(productIds, model.customerProvider!.model!.id!);
+          if (isSc) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+              await Future.delayed(const Duration(seconds: 2), () {
+                const CircularProgressIndicator();
+                Navigator.pushNamed(context, RouteConst.coffeeListView);
+              });
+            }
+          } else {
+            if (mounted) {}
+            ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+          }
         },
         child: const Text("Checkout Price"));
   }
 }
+
+const snackBar = SnackBar(
+  content: Text("Siparişiniz başarıyla oluşturuldu, ana sayfaya yönlendiriliyorsunuz !"),
+  backgroundColor: CoffeeColors.kBrownColor,
+);
+
+final snackBar2 = SnackBar(
+  content: const Text("Hata ! Sipariş oluşturulamadı"),
+  backgroundColor: Colors.red,
+  action: SnackBarAction(
+    textColor: Colors.white,
+    label: "Ana Sayfaya Dön",
+    onPressed: () {
+      // Buraya Butona Tıklayınca Yapılacak Olaylar Yazılacak.
+    },
+  ),
+);
 
 _buildBackground() {
   return Column(
@@ -261,21 +303,3 @@ _buildBackground() {
     ],
   );
 }
-
-/* import 'package:coffe_app/network/models/product/product.dart';
-import 'package:flutter/material.dart';
-
-class CheckoutView extends StatelessWidget {
-  final ProductModel? productModel;
-  const CheckoutView({super.key, this.productModel});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      width: 200,
-      height: 200,
-      child: Center(child: Text("${productModel!.name}")),
-    );
-  }
-} */
