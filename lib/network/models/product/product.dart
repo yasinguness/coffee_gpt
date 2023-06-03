@@ -9,9 +9,6 @@ class ProductModel {
   String? image;
   String? size;
   double? price;
-  double? smallPrice;
-  double? largePrice;
-  int? quantitiy;
   DateTime? createdAt;
   DateTime? updatedAt;
   String? isSweet;
@@ -22,10 +19,7 @@ class ProductModel {
       this.description,
       this.image,
       this.price,
-      this.largePrice,
-      this.smallPrice,
       this.size,
-      this.quantitiy,
       this.createdAt,
       this.updatedAt,
       this.isSweet});
@@ -34,7 +28,8 @@ class ProductModel {
   Map<dynamic, dynamic> toJson() => _$ProductModelToJson(this);
 
   ProductModel copyWith(
-      {String? name,
+      {String? id,
+      String? name,
       double? price,
       double? smallPrice,
       double? largePrice,
@@ -43,13 +38,11 @@ class ProductModel {
       String? isSweet,
       String? description}) {
     return ProductModel(
+      id: id ?? this.id,
       name: name ?? this.name,
       price: price ?? this.price,
-      smallPrice: smallPrice ?? this.smallPrice,
-      largePrice: largePrice ?? this.largePrice,
       description: description ?? this.description,
       size: size ?? this.size,
-      quantitiy: quantitiy ?? this.quantitiy,
       isSweet: isSweet ?? this.isSweet,
     );
   } /*  @override

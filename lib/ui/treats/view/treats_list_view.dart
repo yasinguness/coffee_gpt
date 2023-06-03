@@ -4,6 +4,7 @@ import 'package:coffe_app/common/constants/scrool.dart';
 import 'package:coffe_app/common/provider/basket_provider.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
+import 'package:coffe_app/network/models/order_product/order_product.dart';
 import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
@@ -25,6 +26,8 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
   late final PageController _headingController;
   late double _currentPosition;
   late int _currentHeading;
+  late ProductModel model;
+
   void _navigationListener() {
     setState(() {
       _currentPosition = _treatsController.page!;
@@ -45,6 +48,8 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
     _currentPosition = _treatsController.initialPage.toDouble();
     _currentHeading = _headingController.initialPage;
     _treatsController.addListener(_navigationListener);
+
+    model = widget.productModel!;
   }
 
   @override
@@ -60,7 +65,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
 
     return BaseView<TreatsViewModel>(
         routeObserver: routeObserver,
-        onDispose: () => routeObserver.unsubscribe(this),
+        //onDispose: () => routeObserver.unsubscribe(this),
         builder: (context, value, widget) => value.busy
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -94,7 +99,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
                   ), */
                   Transform.scale(
                     alignment: Alignment.bottomCenter,
-                    scale: 2.0,
+                    scale: 1.8,
                     child: _treatsList(value),
                   ),
                   _elevatedButton(size, value, basket),
@@ -103,7 +108,8 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         onModelReady: (p0) => p0.fetchTreats(),
         model: TreatsViewModel(
             productServices: locator<ProductServices>(),
-            basketProvider: Provider.of<BasketProvider>(context))); //TODO:Neden provider of context yapıyoruz.
+            basketProvider: Provider.of<BasketProvider>(context),
+            sweet: OrderProductModel())); //TODO:Neden provider of context yapıyoruz.
   }
 
   Align _treatsPrice(BuildContext context, TreatsViewModel treat) {
@@ -144,27 +150,15 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
 
   Hero _coffeImage() {
     return Hero(
-        tag: "nameCoffee", //CoffeImageTag
+        tag: "name${model.id!.toString()}", //CoffeImageTag
         child: Transform.scale(
           scale: 1.36,
-          child: Image.asset(
-            "assets/coffee/GLASS-1.png",
+          child: Image.network(
+            "${model.image}",
             fit: BoxFit.contain,
           ),
         ));
   }
-
-/*   SafeArea _treatsCalori(BuildContext context, TreatsViewModel treat) {
-    return SafeArea(
-        child: Padding(
-      padding: CoffeePading.instance.highHorizontalMediumVertical,
-      child: Text(
-        treat.treats![treat.index!].colories!,
-        style: Theme.of(context).textTheme.headline5,
-        textAlign: TextAlign.right,
-      ),
-    ));
-  } */
 
   PageView _treatsList(TreatsViewModel treat) {
     return PageView.builder(
@@ -176,7 +170,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         // we need to know how much index is far from the current page to scale it
         final double distance = (_currentPosition - index + 1).abs();
         final isNotOnScreen = (_currentPosition - index + 1) > 0;
-        final double scale = 1 - distance * .38;
+        final double scale = 1 - distance * 0.38;
         final double translateY =
             (1 - scale).abs() * MediaQuery.of(context).size.height / 1.5 + 25 * (distance - 1).clamp(0.0, 1);
         return Padding(
@@ -187,8 +181,8 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
               ..translate(0.0, !isNotOnScreen ? 0.0 : translateY)
               ..scale(!isNotOnScreen ? 1.0 : scale),
             alignment: Alignment.bottomRight,
-            child: Image.asset(
-              "assets/treat/TREAT_1.png",
+            child: Image.network(
+              "${treat.treats![index - 1].image}",
               fit: BoxFit.fitHeight,
             ),
           ),
@@ -201,13 +195,16 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
     );
   }
 
-  Positioned _elevatedButton(Size size, TreatsViewModel treat, BasketProvider basket) {
+  Positioned _elevatedButton(Size size, TreatsViewModel model, BasketProvider basket) {
     return Positioned(
         right: size.width * 0.2,
         bottom: size.height * 0.25,
         child: ElevatedButton(
           onPressed: () {
-            treat.addToBasket(treat.treats![treat.index!]);
+            model.sweet!.product = model.treats![model.index!];
+            model.sweet!.currentPrice = model.treats![model.index!].price;
+            model.sweet!.selectedSize = "M";
+            model.addToBasket();
             Navigator.pushNamed(context, RouteConst.checkoutView, arguments: widget.productModel);
           },
           style: ElevatedButton.styleFrom(

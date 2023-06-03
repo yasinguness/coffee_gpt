@@ -1,69 +1,66 @@
-import 'package:coffe_app/network/models/order/order.dart';
-import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/common/provider/coffe_provider.dart';
+import 'package:coffe_app/network/models/order_product/order_product.dart';
 import 'package:flutter/cupertino.dart';
 
 class BasketProvider extends ChangeNotifier {
-  OrderModel? model;
-  final List<ProductModel> _products = [];
+  CoffeeProvider? coffeeProvider;
+  final List<OrderProductModel> _products = [];
 
-  List<ProductModel>? get basketProducts => _products;
+  List<OrderProductModel>? get basketProducts => _products;
 
   int basketCounter = 0;
+  List<int>? quantity = [];
   double totalPrice = 0;
-//TODO: Total price işlemleri yapılacak
 
-  void addProductToBasket(ProductModel coffee, {double? price}) {
-    if (coffee.isSweet == "sweet") {
-      _products.add(coffee);
-      basketCounter++;
-      notifyListeners();
+  void addProductToBasket(OrderProductModel orderProduct, int productQuant, {double? price}) {
+    final index = findProductIndex(orderProduct);
+
+    if (index != -1) {
+      _products[index].amount = _products[index].amount! + productQuant;
+
+      quantity?[index] = (quantity?[index])!.toInt() + productQuant;
     } else {
-      _products.add(coffee.copyWith(price: price));
+      orderProduct.amount = productQuant;
+
+      _products.add(orderProduct);
       basketCounter++;
-      //totalPrice += (price! * coffee.quantitiy!);
-      calculalteTotalOrder();
+      quantity!.add(productQuant);
+
       notifyListeners();
     }
   }
 
   void increaseQuantity(int index) {
-    _products[index].quantitiy = _products[index].quantitiy! + 1;
-    calculalteTotalOrder();
-    notifyListeners();
-  }
-
-  updateQuantityTriggerPrice(int index) {
-    double newPrice = (_products[index].quantitiy)!.toDouble() * (_products[index].price)!.toDouble();
-    totalPrice += newPrice - ((_products[index].price)!.toDouble() * _products[index].quantitiy!);
-    _products[index].copyWith(price: newPrice);
+    quantity?[index] = quantity![index] + 1;
+    _products[index].amount = quantity![index];
     notifyListeners();
   }
 
   void decreaseQuantity(int index) {
-    if (_products[index].quantitiy! > 1) {
-      _products[index].quantitiy = _products[index].quantitiy! - 1;
-      calculalteTotalOrder();
+    if (quantity![index] > 1) {
+      quantity?[index] = quantity![index] - 1;
+      _products[index].amount = quantity![index];
     } else {
-      totalPrice -= _products[index].price!;
-
       _products.removeAt(index);
-      basketCounter--;
+      quantity?.removeAt(index);
     }
     notifyListeners();
   }
 
-  calculalteTotalOrder() {
-    for (var i = 0; i < _products.length; i++) {
-      totalPrice = _products[i].quantitiy!.toDouble() * _products[i].price!.toDouble();
-    }
-  }
-/*   int get totalAmount {
-    int sum = 0;
-    for (var order in _products!) {
-      for (var product in order. ?? []) {
-        sum += _products.price ?? 0;
+  int findProductIndex(OrderProductModel orderProduct) {
+    for (int i = 0; i < _products.length; i++) {
+      if (_products[i].product == orderProduct.product && _products[i].product!.size == orderProduct.product!.size) {
+        return i;
       }
     }
-    return sum;
-  } */
+    return -1;
+  }
+
+  double? calculateTotalPrice() {
+    for (var i = 0; i < _products.length; i++) {
+      totalPrice += (quantity?[i])!.toDouble() * (_products[i].product!.price)!.toDouble();
+      return totalPrice;
+    }
+    return null;
+  }
 }

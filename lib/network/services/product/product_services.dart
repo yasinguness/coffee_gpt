@@ -18,7 +18,7 @@ class ProductServices extends BaseService {
     return null;
   }
 
-  Future<List<ProductModel>?> getSweet() async {
+  Future<List<ProductModel>> getSweet() async {
     final response = await dio.get('$BASE_URL/product/sweets');
 
     if (response.statusCode == HttpStatus.ok) {
@@ -27,7 +27,7 @@ class ProductServices extends BaseService {
         return datas.map((e) => ProductModel.fromJson(e)).toList();
       }
     }
-    return null;
+    return [];
   }
 
   Future<List<ProductModel>?> getCoffee() async {
@@ -59,6 +59,16 @@ class ProductServices extends BaseService {
       print("ürün eklenemedi");
       rethrow;
     }
+  }
+
+  Future<ProductModel?> getProductById(String id) async {
+    try {
+      final response = await dio.get('$BASE_URL/product/$id');
+      if (response.statusCode == HttpStatus.ok) {
+        return ProductModel.fromJson(response.data);
+      }
+    } catch (e) {}
+    return null;
   }
 }
 

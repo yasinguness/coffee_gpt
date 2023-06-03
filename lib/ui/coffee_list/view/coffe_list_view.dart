@@ -214,8 +214,8 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware {
         return hero;
       },
       tag: "name${value.coffees![index - 1].id.toString()}",
-      child: Image.asset(
-        "assets/coffee/GLASS-1.png",
+      child: Image.network(
+        "${value.coffees![index - 1].image}",
         fit: BoxFit.fitHeight,
       ),
     );

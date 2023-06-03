@@ -36,4 +36,16 @@ class CustomerService extends BaseService {
     }
     return null;
   }
+
+  Future<CustomerModel?> getCustomerById(String id) async {
+    try {
+      final response = await dio.get('$BASE_URL/customer/$id');
+      if (response.statusCode == HttpStatus.ok) {
+        return CustomerModel.fromJson(response.data);
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return null;
+  }
 }

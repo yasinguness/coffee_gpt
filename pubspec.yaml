@@ -45,11 +45,16 @@ dependencies:
   animated_text_kit: ^4.2.2
   get_it: ^7.2.0
   dio: ^5.1.1
-  build_runner: ^2.3.3
   badges: ^3.1.1
   equatable: ^2.0.5
   provider: ^6.0.5
+  json_serializable: ^6.6.1
+  auto_route_generator: ^6.0.0
+  auto_route: ^6.4.0
 
+
+
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -60,7 +65,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  json_serializable: ^6.6.1
+  build_runner: ^2.3.3
+
 
 
 # For information on the generic Dart part of this file, see the

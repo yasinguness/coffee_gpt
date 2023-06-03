@@ -17,8 +17,18 @@ class OrderService extends BaseService {
     return null;
   }
 
-  Future<bool?> postOrder(List<String?> products, String customerId, double totalPrice) async {
-    final postOrders = {"customer": customerId, "products": products, "totalPrice": totalPrice};
+  Future<bool?> postOrder(OrderModel model) async {
+    final postOrders = {
+      "customer": model.customer!.id,
+      "products": model.products!
+          .map((product) => {
+                "product": product.product!.id,
+                "amount": product.amount,
+                "selectedSize": product.selectedSize,
+                "currentPrice": product.currentPrice
+              })
+          .toList(),
+    };
     try {
       final response = await dio.post(
         '$BASE_URL/order/create',

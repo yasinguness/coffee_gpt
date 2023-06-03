@@ -8,6 +8,7 @@ import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
+import 'package:coffe_app/network/models/order_product/order_product.dart';
 import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
@@ -46,6 +47,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
                 ),
               ),
         model: CoffeeDetailViewModel(
+            orderProductModel: OrderProductModel(),
             coffeeServices: locator<ProductServices>(),
             basketProvider: Provider.of<BasketProvider>(context),
             coffeeProvider: Provider.of<CoffeeProvider>(context)));
@@ -110,7 +112,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         GestureDetector(
-          onTap: () => model.decrementCounter(widget.coffee!),
+          onTap: () => model.decrementCounter(),
           child: Container(
             decoration: BoxDecoration(
                 color: CoffeeColors.kTitleColor,
@@ -126,12 +128,12 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Text(
-            widget.coffee!.quantitiy! < 1 ? "1" : widget.coffee!.quantitiy.toString(),
+            model.coffeeProvider!.productQuantity < 1 ? "1" : model.coffeeProvider!.productQuantity.toString(),
             style: Theme.of(context).textTheme.headline5,
           ),
         ),
         GestureDetector(
-          onTap: () => model.incrementCounter(widget.coffee!),
+          onTap: () => model.incrementCounter(),
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
@@ -158,7 +160,8 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
           ),
         ),
         onPressed: () {
-          value.addToBasket(widget.coffee!);
+          value.orderProductModel!.product = widget.coffee!;
+          value.addToBasket();
           Navigator.pushNamed(context, RouteConst.sweetTreatsView, arguments: widget.coffee);
         },
         child: _elevatedButtonText(context));
@@ -213,8 +216,9 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
       children: ['S', 'M', 'L']
           .map((sizeCoffe) => GestureDetector(
                 onTap: () {
+                  //model.coffeeProvider!.orderProduct?.selectedSize = sizeCoffe;
                   model.coffeeProvider!.selectedSize(widget.coffee!, sizeCoffe);
-                  // Kahvelerin hangi boyuttda olduğuna göre fiyatı belirtiyor.
+                  model.orderProductModel!.selectedSize = sizeCoffe;
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
@@ -254,7 +258,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        "${widget.coffee?.size == 'M' ? widget.coffee?.price : widget.coffee?.size == 'L' ? widget.coffee?.largePrice : widget.coffee!.smallPrice}",
+        "${widget.coffee?.size == 'M' ? widget.coffee?.price : widget.coffee?.size == 'L' ? (widget.coffee?.price)!.toDouble() + 5 : (widget.coffee!.price)!.toDouble() - 5}",
         style: Theme.of(context).textTheme.headline1,
       ),
     );
@@ -307,8 +311,8 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
                     : 1.2,
             curve: Curves.easeOutBack,
             alignment: Alignment.center,
-            child: Image.asset(
-              "assets/coffee/GLASS-1.png",
+            child: Image.network(
+              "${widget.coffee!.image}",
               fit: BoxFit.contain,
             ),
           ),

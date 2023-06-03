@@ -1,37 +1,40 @@
+import 'package:coffe_app/network/models/order_product/order_product.dart';
 import 'package:coffe_app/network/models/product/product.dart';
 import 'package:flutter/cupertino.dart';
 
 class CoffeeProvider extends ChangeNotifier {
-  ProductModel? coffee;
-  CoffeeProvider({this.coffee});
+  OrderProductModel? orderProduct;
+  CoffeeProvider({this.orderProduct});
 
-  void selectedSize(ProductModel model, String size) {
-    model.size = size;
+  int productQuantity = 1;
+
+  void incrementCounter() {
+    productQuantity = productQuantity + 1;
     notifyListeners();
   }
 
-  double getCoffeePrice(ProductModel coffee) {
-    if (coffee.size == 'S') {
-      return coffee.smallPrice!;
-    } else if (coffee.size == 'M') {
-      return coffee.price!;
-    } else if (coffee.size == 'L') {
-      return coffee.largePrice!;
+  void decrementCounter() {
+    if (productQuantity < 1) {
+      productQuantity = 1;
+    }
+    productQuantity = productQuantity - 1;
+    notifyListeners();
+  }
+
+  double getCoffeePrice(ProductModel model) {
+    if (model.size == 'S') {
+      return model.price! - 5;
+    } else if (model.size == 'M') {
+      return model.price!;
+    } else if (model.size == 'L') {
+      return model.price! + 5;
     } else {
       return 0;
     }
   }
 
-  void incrementCounter(ProductModel product) {
-    product.quantitiy = product.quantitiy! + 1;
-    notifyListeners();
-  }
-
-  void decrementCounter(ProductModel product) {
-    if (product.quantitiy! < 1) {
-      product.quantitiy = 1;
-    }
-    product.quantitiy = product.quantitiy! - 1;
+  void selectedSize(ProductModel model, String size) {
+    model.size = size;
     notifyListeners();
   }
 }

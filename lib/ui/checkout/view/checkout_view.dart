@@ -8,6 +8,7 @@ import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/main.dart';
+import 'package:coffe_app/network/models/order/order.dart';
 import 'package:coffe_app/network/services/order/order_service.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
@@ -66,7 +67,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
                             itemCount: value.basketProvider!.basketProducts?.length,
                           ),
                           const Spacer(),
-                          Text(value.basketProvider!.totalPrice.toString()),
+                          //Text(value.basketProvider!.totalPrice.toString()),
                           _checkoutButton(value)
                           /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
                         ],
@@ -77,10 +78,12 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
               );
       },
       model: CheckoutViewModel(
-          orderServices: locator<OrderService>(),
-          basketProvider: Provider.of<BasketProvider>(context),
-          coffeeProvider: Provider.of<CoffeeProvider>(context),
-          customerProvider: Provider.of<CustomerProvider>(context)),
+        model: OrderModel(),
+        orderServices: locator<OrderService>(),
+        basketProvider: Provider.of<BasketProvider>(context),
+        coffeeProvider: Provider.of<CoffeeProvider>(context),
+        customerProvider: Provider.of<CustomerProvider>(context),
+      ),
       //onModelReady: (p0) => p0.getCoffeePrice(),
     );
   }
@@ -95,7 +98,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _coffeImage(size, index),
+          _coffeImage(size, value, index),
           _coffeeNameAndQuantity(context, value, index),
           _coffeeSizeAndPrice(value, index, context),
         ],
@@ -109,7 +112,8 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (value.basketProvider!.basketProducts?[index].isSweet != "sweet") _coffeSize(value, context, index),
+          if (value.basketProvider!.basketProducts?[index].product!.isSweet != "sweet")
+            _coffeSize(value, context, index),
           _coffePrice(value, context, index)
         ],
       ),
@@ -148,7 +152,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Text(
-              model.basketProvider!.basketProducts![index].quantitiy.toString(),
+              model.basketProvider!.quantity![index].toString(),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
@@ -178,7 +182,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     );
   }
 
-  Expanded _coffeImage(Size size, int index) {
+  Expanded _coffeImage(Size size, CheckoutViewModel model, int index) {
     return Expanded(
       flex: 2,
       child: Container(
@@ -186,8 +190,8 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         child: Hero(
             tag: "nameCoffee$index", //CoffeImageTag
-            child: Image.asset(
-              "assets/coffee/GLASS-2.png",
+            child: Image.network(
+              "${model.basketProvider!.basketProducts![index].product!.image}",
               fit: BoxFit.contain,
             )),
       ),
@@ -199,9 +203,8 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       flex: 1,
       child: Text(
         //TODO: Price olayını düzelt
-        ((model.basketProvider!.basketProducts![index].quantitiy!).toDouble() *
-                (model.basketProvider!.basketProducts![index].price)!.toDouble())
-            .toString(),
+        (model.basketProvider!.basketProducts![index].currentPrice).toString(),
+
         style: Theme.of(context).textTheme.subtitle1!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
@@ -216,7 +219,9 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       flex: 1,
       child: Text(
         //TODO: Price olayını düzelt
-        model.basketProvider!.basketProducts![index].size.toString(),
+        model.basketProvider!.basketProducts![index].selectedSize == null
+            ? model.basketProvider!.basketProducts![index].selectedSize = 'M'
+            : model.basketProvider!.basketProducts![index].selectedSize.toString(),
         style: Theme.of(context).textTheme.subtitle1!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
@@ -228,7 +233,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   Text _coffeName(BuildContext context, CheckoutViewModel model, int index) {
     return Text(
-      model.basketProvider!.basketProducts![index].name!,
+      model.basketProvider!.basketProducts![index].product!.name.toString(),
       style: Theme.of(context)
           .textTheme
           .subtitle1!
@@ -246,8 +251,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
           ),
         ),
         onPressed: () async {
-          List<String?> productIds = model.basketProvider!.basketProducts!.map((product) => product.id).toList();
-          bool isSc = await model.postOrder(productIds, model.customerProvider!.model!.id!);
+          bool isSc = await model.postOrder();
           if (isSc) {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
