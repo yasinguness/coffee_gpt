@@ -25,7 +25,6 @@ class BasketProvider extends ChangeNotifier {
       _products.add(orderProduct);
       basketCounter++;
       quantity!.add(productQuant);
-
       notifyListeners();
     }
   }
@@ -43,24 +42,27 @@ class BasketProvider extends ChangeNotifier {
     } else {
       _products.removeAt(index);
       quantity?.removeAt(index);
+      basketCounter--;
     }
     notifyListeners();
   }
 
   int findProductIndex(OrderProductModel orderProduct) {
     for (int i = 0; i < _products.length; i++) {
-      if (_products[i].product == orderProduct.product && _products[i].product!.size == orderProduct.product!.size) {
+      if (_products[i].product == orderProduct.product && _products[i].selectedSize == orderProduct.selectedSize) {
         return i;
       }
     }
     return -1;
   }
 
-  double? calculateTotalPrice() {
+  double calculateTotalPrice() {
     for (var i = 0; i < _products.length; i++) {
-      totalPrice += (quantity?[i])!.toDouble() * (_products[i].product!.price)!.toDouble();
-      return totalPrice;
+      int amount = _products[i].amount ?? 0;
+      double currentPrice = _products[i].currentPrice ?? 0;
+      totalPrice += amount * currentPrice;
     }
-    return null;
+
+    return totalPrice;
   }
 }

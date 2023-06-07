@@ -1,25 +1,27 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:coffe_app/common/constants/coffee_padding.dart';
-import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/network/models/product/product.dart';
+import 'package:coffe_app/router/app_router.dart';
 import 'package:coffe_app/ui/treats/view/treats_list_view.dart';
 import 'package:flutter/material.dart';
 
-class SweetTreatsWidget extends StatefulWidget {
+@RoutePage()
+class SweetTreatsView extends StatefulWidget {
   final ProductModel? produtModel;
-  const SweetTreatsWidget({
+  const SweetTreatsView({
     super.key,
     this.produtModel,
   });
 
   @override
-  State<SweetTreatsWidget> createState() => _SweetTreatsWidgetState();
+  State<SweetTreatsView> createState() => _SweetTreatsViewState();
 }
 
-class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
+class _SweetTreatsViewState extends State<SweetTreatsView> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -35,13 +37,12 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
             child: Padding(
               padding: CoffeePading.instance.high,
               child: SizedBox(
-                width: size.width * 0.55,
                 height: size.height * 0.25,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Expanded(flex: 3, child: _coffeNameText(context)),
-                    Expanded(flex: 3, child: _questionText(context)),
+                    Expanded(flex: 1, child: _coffeNameText(context)),
+                    Expanded(flex: 1, child: _questionText(context)),
                     Expanded(flex: 2, child: _noThanksButton()),
                   ],
                 ),
@@ -58,7 +59,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
         tag: "name${widget.produtModel!.name!.toString()}", //CoffeNameTag
         child: Text(
           widget.produtModel!.name!,
-          style: Theme.of(context).textTheme.headline1,
+          style: Theme.of(context).textTheme.displayLarge,
           textAlign: TextAlign.right,
         ));
   }
@@ -67,7 +68,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
     return Text(
       TextConst.treatText,
       textAlign: TextAlign.right,
-      style: Theme.of(context).textTheme.headline1!.copyWith(
+      style: Theme.of(context).textTheme.displayLarge!.copyWith(
             fontSize: 18,
             fontWeight: FontWeight.w400,
             color: CoffeeColors.kTitleColor.withOpacity(0.5),
@@ -80,7 +81,7 @@ class _SweetTreatsWidgetState extends State<SweetTreatsWidget> {
       alignment: Alignment.centerRight,
       child: ElevatedButton(
         onPressed: () {
-          Navigator.pushNamed(context, RouteConst.checkoutView, arguments: widget.produtModel);
+          context.router.push(const CheckoutRoute());
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,

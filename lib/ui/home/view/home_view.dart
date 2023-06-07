@@ -1,6 +1,8 @@
+import 'package:auto_route/annotations.dart';
 import 'package:coffe_app/ui/splash/view/splash_view.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 

@@ -8,7 +8,7 @@ GetIt locator = GetIt.instance;
 
 Future setupLocator() async {
   locator.registerSingleton<ChatGptServices>(ChatGptServices());
-  locator.registerSingleton<ProductServices>(ProductServices());
+  locator.registerLazySingleton(() => ProductServices());
   locator.registerSingleton<OrderService>(OrderService());
   locator.registerSingleton<CustomerService>(CustomerService());
 }

@@ -16,8 +16,4 @@ class LoginViewModel extends BaseModel {
     customerProvider!.model = await customerService!.createCustomer(controller.text, qrcontroller.text);
     setBusy(false);
   }
-
-  init() {
-    //qrcontroller.text = "D62";
-  }
 }

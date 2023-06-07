@@ -1,12 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/scrool.dart';
 import 'package:coffe_app/common/provider/basket_provider.dart';
 import 'package:coffe_app/locator.dart';
-import 'package:coffe_app/main.dart';
 import 'package:coffe_app/network/models/order_product/order_product.dart';
 import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/network/services/product/product_services.dart';
+import 'package:coffe_app/router/app_router.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/treats/view_model/treats_view_model.dart';
 import 'package:flutter/material.dart';
@@ -54,8 +54,9 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
 
   @override
   void dispose() {
-    _treatsController.removeListener(_navigationListener);
     super.dispose();
+
+    _treatsController.removeListener(_navigationListener);
   }
 
   @override
@@ -64,7 +65,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
     var basket = Provider.of<BasketProvider>(context);
 
     return BaseView<TreatsViewModel>(
-        routeObserver: routeObserver,
+        //routeObserver: routeObserver,
         //onDispose: () => routeObserver.unsubscribe(this),
         builder: (context, value, widget) => value.busy
             ? const Center(
@@ -80,7 +81,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
                         children: [
                           _treatsPrice(context, value),
                           SizedBox(
-                            height: size.height * 0.02, // 15 value
+                            height: size.height * 0.008, // 15 value
                           ),
                           _treatsNameList(value)
                         ],
@@ -93,10 +94,6 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
                     height: size.height * 0.7,
                     child: _coffeImage(),
                   ),
-/*                   Align(
-                    alignment: Alignment.bottomRight,
-                    child: _treatsCalori(context, value),
-                  ), */
                   Transform.scale(
                     alignment: Alignment.bottomCenter,
                     scale: 1.8,
@@ -109,7 +106,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         model: TreatsViewModel(
             productServices: locator<ProductServices>(),
             basketProvider: Provider.of<BasketProvider>(context),
-            sweet: OrderProductModel())); //TODO:Neden provider of context yapıyoruz.
+            sweet: OrderProductModel()));
   }
 
   Align _treatsPrice(BuildContext context, TreatsViewModel treat) {
@@ -119,7 +116,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         padding: const EdgeInsets.only(right: 20),
         child: Text(
           "${treat.treats![treat.index!].price} TL",
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
           textAlign: TextAlign.right,
         ),
       ),
@@ -133,11 +130,11 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         itemBuilder: (context, index) {
           treat.index = index;
           return Padding(
-            padding: const EdgeInsets.only(left: 220, right: 20),
+            padding: const EdgeInsets.only(right: 20),
             child: Text(
               treat.treats![index].name!,
               textAlign: TextAlign.right,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           );
         },
@@ -205,7 +202,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
             model.sweet!.currentPrice = model.treats![model.index!].price;
             model.sweet!.selectedSize = "M";
             model.addToBasket();
-            Navigator.pushNamed(context, RouteConst.checkoutView, arguments: widget.productModel);
+            context.router.push(const CheckoutRoute());
           },
           style: ElevatedButton.styleFrom(
             shape: const CircleBorder(),

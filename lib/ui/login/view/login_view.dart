@@ -1,12 +1,14 @@
-import 'package:coffe_app/common/constants/router_constants.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:coffe_app/common/provider/customer_provider.dart';
 import 'package:coffe_app/locator.dart';
 import 'package:coffe_app/network/services/customer/customer_service.dart';
+import 'package:coffe_app/router/app_router.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/login/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
@@ -16,7 +18,6 @@ class LoginView extends StatelessWidget {
     return BaseView<LoginViewModel>(
       model: LoginViewModel(
           customerService: locator<CustomerService>(), customerProvider: Provider.of<CustomerProvider>(context)),
-      onModelReady: (p0) => p0.init(),
       builder: (context, value, widget) => Scaffold(
         body: SizedBox(
           width: double.infinity,
@@ -91,7 +92,8 @@ class LoginView extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               model.createCustomer();
-              Navigator.pushNamed(context, RouteConst.coffeeListView);
+              context.router.push(const CoffeeListRoute());
+              //Navigator.pushNamed(context, RouteConst.coffeeListView);
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown.shade600,

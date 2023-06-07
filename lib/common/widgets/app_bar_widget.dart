@@ -1,7 +1,7 @@
-import 'package:badges/badges.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/provider/basket_provider.dart';
+import 'package:coffe_app/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading ??
           IconButton(
               onPressed: () {
-                Navigator.pop(context, "fromHome");
+                context.router.pop();
               },
               icon: const Icon(
                 FeatherIcons.chevronLeft,
@@ -31,24 +31,27 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               )),
       actions: actions ??
           [
-            Badge(
-              badgeStyle: const BadgeStyle(
-                badgeColor: CoffeeColors.kBrownColor,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Badge(
+                textStyle: const TextStyle(
+                  color: CoffeeColors.kBrownColor,
+                ),
+                alignment: Alignment.topRight,
+                label: Text(
+                  basket.basketCounter.toString(),
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                ),
+                child: IconButton(
+                    onPressed: () {
+                      context.router.push(const CheckoutRoute());
+                    },
+                    icon: const Icon(
+                      FeatherIcons.shoppingCart,
+                      color: CoffeeColors.black,
+                      size: 25,
+                    )),
               ),
-              position: BadgePosition.topEnd(end: 3, top: 0),
-              badgeContent: Text(
-                basket.basketCounter.toString(),
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-              ),
-              child: IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, RouteConst.checkoutView);
-                  },
-                  icon: const Icon(
-                    FeatherIcons.shoppingCart,
-                    color: CoffeeColors.black,
-                    size: 30,
-                  )),
             )
           ],
     );

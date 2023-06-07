@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
+import 'package:coffe_app/router/app_router.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
@@ -17,8 +19,8 @@ class _SplashViewState extends State<SplashView> {
     super.initState();
     Future.delayed(
       const Duration(milliseconds: 1500),
-      () {
-        Navigator.pushNamed(context, RouteConst.loginView);
+      () async {
+        await context.router.push(const LoginRoute());
       },
     );
   }
@@ -43,13 +45,6 @@ class _SplashViewState extends State<SplashView> {
           ),
         ),
       ),
-    );
-  }
-
-  AppBar _appBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
     );
   }
 
@@ -87,12 +82,12 @@ class _SplashViewState extends State<SplashView> {
   Align _align() {
     return Align(
       alignment: Alignment.center + const Alignment(0, 0.25),
-      child: Stack(
+      child: const Stack(
         clipBehavior: Clip.none,
         children: [
           IntrinsicHeight(
             child: Column(
-              children: const [
+              children: [
                 IntroText(fontSize: 80, fontWeight: FontWeight.w400, text: "Coffee"),
                 IntroText(text: "GPT", fontSize: 50, fontWeight: FontWeight.w700),
               ],
@@ -120,7 +115,7 @@ class IntroText extends StatelessWidget {
     return Text(text,
         style: Theme.of(context)
             .textTheme
-            .headline1!
+            .displayLarge!
             .copyWith(fontSize: fontSize, fontWeight: fontWeight, color: CoffeeColors.black));
   }
 }

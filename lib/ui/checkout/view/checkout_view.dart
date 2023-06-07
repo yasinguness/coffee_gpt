@@ -1,5 +1,5 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/router_constants.dart';
 import 'package:coffe_app/common/constants/text_const.dart';
 import 'package:coffe_app/common/provider/basket_provider.dart';
 import 'package:coffe_app/common/provider/coffe_provider.dart';
@@ -7,14 +7,15 @@ import 'package:coffe_app/common/provider/customer_provider.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
 import 'package:coffe_app/locator.dart';
-import 'package:coffe_app/main.dart';
 import 'package:coffe_app/network/models/order/order.dart';
 import 'package:coffe_app/network/services/order/order_service.dart';
+import 'package:coffe_app/router/app_router.dart';
 import 'package:coffe_app/ui/base/base_view.dart';
 import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+@RoutePage()
 class CheckoutView extends StatefulWidget {
   const CheckoutView({super.key});
 
@@ -27,55 +28,14 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return BaseView<CheckoutViewModel>(
-      routeObserver: routeObserver,
-      onDispose: () => routeObserver.unsubscribe(this),
+      //routeObserver: routeObserver,
+      //onDispose: () => routeObserver.unsubscribe(this),
       builder: (context, value, wtg) {
         return value.busy
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : Scaffold(
-                appBar: const CustomAppBar(),
-                body: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    _buildBackground(),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _myOrders(context),
-                          SizedBox(
-                            height: size.height * 0.04,
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  _coffeCard(size, context, value, index),
-                                  const Divider(
-                                    thickness: 1,
-                                  ),
-                                  SizedBox(
-                                    height: size.height * 0.01,
-                                  ),
-                                ],
-                              );
-                            },
-                            itemCount: value.basketProvider!.basketProducts?.length,
-                          ),
-                          const Spacer(),
-                          //Text(value.basketProvider!.totalPrice.toString()),
-                          _checkoutButton(value)
-                          /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              );
+            : _scaffold(context, size, value);
       },
       model: CheckoutViewModel(
         model: OrderModel(),
@@ -85,6 +45,55 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         customerProvider: Provider.of<CustomerProvider>(context),
       ),
       //onModelReady: (p0) => p0.getCoffeePrice(),
+    );
+  }
+
+  Scaffold _scaffold(BuildContext context, Size size, CheckoutViewModel value) {
+    return Scaffold(
+      appBar: const CustomAppBar(),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          _buildBackground(),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _myOrders(context),
+                SizedBox(
+                  height: size.height * 0.04,
+                ),
+                _orderList(size, value),
+                const Spacer(),
+                Text(value.basketProvider!.totalPrice.toString()),
+                _checkoutButton(value)
+                /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  ListView _orderList(Size size, CheckoutViewModel value) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return Column(
+          children: [
+            _coffeCard(size, context, value, index),
+            const Divider(
+              thickness: 1,
+            ),
+            SizedBox(
+              height: size.height * 0.01,
+            ),
+          ],
+        );
+      },
+      itemCount: value.basketProvider!.basketProducts?.length,
     );
   }
 
@@ -112,9 +121,13 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (value.basketProvider!.basketProducts?[index].product!.isSweet != "sweet")
+          if (value.basketProvider!.basketProducts?[index].product!.isSweet == "sweet") ...[
+            const Spacer(flex: 1),
+            _coffePrice(value, context, index)
+          ] else ...[
             _coffeSize(value, context, index),
-          _coffePrice(value, context, index)
+            _coffePrice(value, context, index)
+          ]
         ],
       ),
     );
@@ -178,7 +191,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
   Text _myOrders(BuildContext context) {
     return Text(
       TextConst.orderText,
-      style: Theme.of(context).textTheme.headline1,
+      style: Theme.of(context).textTheme.displayLarge,
     );
   }
 
@@ -205,7 +218,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         //TODO: Price olayını düzelt
         (model.basketProvider!.basketProducts![index].currentPrice).toString(),
 
-        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
             fontWeight: FontWeight.w600,
@@ -222,7 +235,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         model.basketProvider!.basketProducts![index].selectedSize == null
             ? model.basketProvider!.basketProducts![index].selectedSize = 'M'
             : model.basketProvider!.basketProducts![index].selectedSize.toString(),
-        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
             fontWeight: FontWeight.w600,
@@ -231,13 +244,18 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     );
   }
 
-  Text _coffeName(BuildContext context, CheckoutViewModel model, int index) {
-    return Text(
-      model.basketProvider!.basketProducts![index].product!.name.toString(),
-      style: Theme.of(context)
-          .textTheme
-          .subtitle1!
-          .copyWith(fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w800, color: CoffeeColors.kTitleColor),
+  Tooltip _coffeName(BuildContext context, CheckoutViewModel model, int index) {
+    return Tooltip(
+      message: model.basketProvider!.basketProducts![index].product!.name.toString(),
+      child: Text(
+        model.basketProvider!.basketProducts![index].product!.name.toString(),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context)
+            .textTheme
+            .titleMedium!
+            .copyWith(fontSize: 18, letterSpacing: 1, fontWeight: FontWeight.w800, color: CoffeeColors.kTitleColor),
+      ),
     );
   }
 
@@ -258,7 +276,9 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
               await Future.delayed(const Duration(seconds: 2), () {
                 const CircularProgressIndicator();
-                Navigator.pushNamed(context, RouteConst.coffeeListView);
+                context.router.removeUntil((route) => false);
+                context.router.push(const CoffeeListRoute());
+                //push(coffeeList) eski hali
               });
             }
           } else {
