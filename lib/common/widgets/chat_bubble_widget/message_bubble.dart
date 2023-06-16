@@ -1,5 +1,6 @@
 import 'package:coffe_app/common/widgets/chat_bubble_widget/triangle.dart';
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class OutBubble extends StatelessWidget {
   final String message;
@@ -42,7 +43,7 @@ class OutBubble extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(20)),
-                    child: Image.asset("assets/chatGpt/dash.png"),
+                    child: const RiveAnimation.asset("assets/rive/bot.riv"),
                   ),
                 ),
                 Expanded(

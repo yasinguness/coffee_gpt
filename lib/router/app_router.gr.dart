@@ -21,6 +21,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const CheckoutView(),
       );
     },
+    ChatScreenRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ChatScreenView(),
+      );
+    },
     CoffeeListRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -36,6 +42,12 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           coffee: args.coffee,
         ),
+      );
+    },
+    EntryRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const EntryView(),
       );
     },
     HomeRoute.name: (routeData) {
@@ -80,6 +92,20 @@ class CheckoutRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'CheckoutRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ChatScreenView]
+class ChatScreenRoute extends PageRouteInfo<void> {
+  const ChatScreenRoute({List<PageRouteInfo>? children})
+      : super(
+          ChatScreenRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ChatScreenRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -134,6 +160,20 @@ class CoffeeDetailRouteArgs {
   String toString() {
     return 'CoffeeDetailRouteArgs{key: $key, coffee: $coffee}';
   }
+}
+
+/// generated route for
+/// [EntryView]
+class EntryRoute extends PageRouteInfo<void> {
+  const EntryRoute({List<PageRouteInfo>? children})
+      : super(
+          EntryRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'EntryRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

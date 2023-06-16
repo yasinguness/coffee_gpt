@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/coffee_padding.dart';
 import 'package:coffe_app/common/constants/scrool.dart';
 import 'package:coffe_app/common/widgets/app_bar_widget.dart';
 import 'package:coffe_app/common/widgets/background_decoration.dart';
@@ -82,18 +81,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
     return Scaffold(
       appBar: const CustomAppBar(),
       body: Stack(
-        children: [
-          _backgroundAlign(size),
-          _coffeListBuilder(value),
-          Padding(
-            padding: CoffeePading.instance.low,
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: _fabButton(context),
-            ),
-          ),
-          _backgroundDecoration(size, value)
-        ],
+        children: [_backgroundAlign(size), _coffeListBuilder(value), _backgroundDecoration(size, value)],
       ),
     );
   }

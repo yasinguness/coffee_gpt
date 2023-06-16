@@ -53,6 +53,8 @@ dependencies:
   json_annotation: ^4.8.1
   cached_network_image: ^3.2.3
   lottie: ^2.4.0
+  flutter_svg: ^2.0.6
+  rive: ^0.11.2
 
 
   
@@ -90,6 +92,7 @@ flutter:
     - assets/treat/
     - assets/chatGpt/
     - assets/lottie/
+    - assets/rive/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

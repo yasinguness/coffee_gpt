@@ -69,6 +69,8 @@ class LoginView extends StatelessWidget {
                   //enabled: false,
                   //readOnly: true,
                   decoration: const InputDecoration(
+                      focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                      enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                       disabledBorder: OutlineInputBorder(
                         borderSide: BorderSide.none,
                       ),
@@ -92,8 +94,7 @@ class LoginView extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               model.createCustomer();
-              context.router.push(const CoffeeListRoute());
-              //Navigator.pushNamed(context, RouteConst.coffeeListView);
+              context.router.push(const EntryRoute());
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown.shade600,
@@ -108,14 +109,9 @@ class LoginView extends StatelessWidget {
 
   Container _backgroundImage(Size size) {
     return Container(
-      width: double.infinity,
-      height: size.height * 1,
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              fit: BoxFit.cover,
-              image: Image.network(
-                      'https://images.unsplash.com/photo-1498709112912-9be3173d30be?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80')
-                  .image)),
-    );
+        width: double.infinity,
+        height: size.height * 1,
+        decoration: BoxDecoration(
+            image: DecorationImage(fit: BoxFit.cover, image: Image.asset("assets/coffee/backg.jpg").image)));
   }
 }

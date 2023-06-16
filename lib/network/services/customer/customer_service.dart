@@ -18,7 +18,7 @@ class CustomerService extends BaseService {
     return null;
   }
 
-  Future<CustomerModel?> createCustomer(String name, String qrNo) async {
+  Future<CustomerModel?> createCustomer(String? name, String? qrNo) async {
     var customerData = {
       "name": name,
       "qrNo": qrNo,
@@ -32,7 +32,6 @@ class CustomerService extends BaseService {
       }
     } catch (e) {
       print("Müşteri oluşturulamadı");
-      rethrow;
     }
     return null;
   }
