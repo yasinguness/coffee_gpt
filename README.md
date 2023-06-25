@@ -1,6 +1,5 @@
-# coffe_app
-
-A new Flutter project.
+<h1> Coffee GPT </h1>
+Coffee GPT , it is a mobile application that makes order suggestions to customers and allows customers to order easily and quickly.
 
 ## Getting Started
 
