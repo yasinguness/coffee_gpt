@@ -15,5 +15,7 @@ Coffee GPT , it is a mobile application that makes order suggestions to customer
 
 <h2> Login And Home View </h2>
 
-![Login View](https://res.cloudinary.com/dfpxtczdk/image/upload/v1687729457/photo/Ekran_g%C3%B6r%C3%BCnt%C3%BCs%C3%BC_2023-06-26_003402_e2wczx.png)
+<img src="https://res.cloudinary.com/dfpxtczdk/image/upload/v1687729457/photo/Ekran_g%C3%B6r%C3%BCnt%C3%BCs%C3%BC_2023-06-26_003402_e2wczx.png" alt="alt text" width="120" height="180">
+<img src="https://res.cloudinary.com/dfpxtczdk/image/upload/v1687729456/photo/Ekran_g%C3%B6r%C3%BCnt%C3%BCs%C3%BC_2023-06-26_003433_jvkm9n.png" alt="alt text" width="120" height="180">
+
 
