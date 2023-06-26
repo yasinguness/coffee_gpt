@@ -3,8 +3,8 @@ Coffee GPT , it is a mobile application that makes order suggestions to customer
 
 <h2> Packages And Architecture </h2>
 <ul>
-  <li>Clean Architecture</li>
-  <li>MVVM</li>
+  
+  <li>MVVM Architecture</li>
   <li>Provider</li>
   <li>Auto Route</li>
   <li>Equatable</li>
