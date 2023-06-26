@@ -11,6 +11,7 @@ Coffee GPT , it is a mobile application that makes order suggestions to customer
   <li>json_serializable</li>
   <li>get_it</li>
   <li>dio</li>
+  <li>cached_network_image</li>
 </ul> 
 
 <h2> Login And Home View </h2>
