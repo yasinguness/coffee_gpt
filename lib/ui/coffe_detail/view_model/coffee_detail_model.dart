@@ -1,37 +1,30 @@
-import 'dart:async';
+import '../../../common/provider/basket_provider.dart';
+import '../../../common/provider/coffe_provider.dart';
+import '../../../network/models/order_product/order_product.dart';
+import '../../../network/services/product/product_services.dart';
+import '../../base/base_model.dart';
 
-import 'package:coffe_app/network/models/coffee.dart';
-import 'package:coffe_app/network/services/api.dart';
-import 'package:coffe_app/ui/base/base_model.dart';
+class CoffeeDetailViewModel extends BaseModel {
+  ProductServices? coffeeServices;
+  OrderProductModel? orderProductModel;
 
-class CoffeeDetailModel extends BaseModel {
-  final Api? api;
+  BasketProvider? basketProvider;
+  CoffeeProvider? coffeeProvider;
 
-  CoffeeDetailModel({this.api});
-  Coffee? coffee;
-  String? sizeCoffee;
-  bool? isSmall = false;
-  bool? isMedium = false;
+  CoffeeDetailViewModel({this.orderProductModel, this.coffeeServices, this.basketProvider, this.coffeeProvider});
 
-  void updateCoffeeSize(String size) {
-    setBusy(true);
-    sizeCoffee = size;
-    if (sizeCoffee == 'S') {
-      isSmall = true;
-      isMedium = false;
-    } else if (sizeCoffee == 'M') {
-      isMedium = true;
-      isSmall = false;
-    } else {
-      isMedium = false;
-      isSmall = false;
-    }
-    setBusy(false);
+  void incrementCounter() {
+    coffeeProvider!.incrementCounter();
   }
 
-  Future getCoffee(String id) async {
+  void decrementCounter() {
+    coffeeProvider!.decrementCounter();
+  }
+
+  void addToBasket() {
     setBusy(true);
-    coffee = await api!.getCoffeeId(id);
-    setBusy(false);
+    coffeeProvider!.orderProduct = orderProductModel;
+    orderProductModel!.currentPrice = coffeeProvider!.getCoffeePrice(orderProductModel!.product!);
+    basketProvider!.addProductToBasket(orderProductModel!, coffeeProvider!.productQuantity);
   }
 }

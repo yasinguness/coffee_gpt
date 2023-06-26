@@ -1,6 +1,8 @@
-import 'package:coffe_app/ui/Intro/view/intro_view.dart';
+import 'package:auto_route/annotations.dart';
+import 'package:coffe_app/ui/splash/view/splash_view.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -11,7 +13,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    return Container(clipBehavior: Clip.none, child: const IntroView() /* Stack(clipBehavior: Clip.none, ) */
+    return Container(clipBehavior: Clip.none, child: const SplashView() /* Stack(clipBehavior: Clip.none, ) */
 
         );
   }

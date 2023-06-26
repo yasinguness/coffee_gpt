@@ -13,7 +13,7 @@ import 'package:coffe_app/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(MyApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
@@ -28,3 +28,16 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 }
+/* group(
+    "description",
+    () {
+      testWidgets('Deneme Test', (WidgetTester tester) async {
+        // Build our app and trigger a frame.
+        await tester.pumpWidget(MaterialApp(
+          home: Column(children: [ElevatedButton(key: const Key("a"), onPressed: () {}, child: const Text("Data"))]),
+        ));
+        final btn = find.byType(ElevatedButton);
+        expect(btn, findsOneWidget);
+      });
+    },
+  ); */
