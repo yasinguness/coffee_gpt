@@ -1,13 +1,14 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/coffee_padding.dart';
-import 'package:coffe_app/common/constants/text_const.dart';
-import 'package:coffe_app/common/widgets/app_bar_widget.dart';
-import 'package:coffe_app/common/widgets/background_decoration.dart';
-import 'package:coffe_app/network/models/product/product.dart';
-import 'package:coffe_app/router/app_router.dart';
-import 'package:coffe_app/ui/treats/view/treats_list_view.dart';
 import 'package:flutter/material.dart';
+
+import '../../../common/constants/coffee_colors.dart';
+import '../../../common/constants/coffee_padding.dart';
+import '../../../common/constants/text_const.dart';
+import '../../../common/widgets/app_bar_widget.dart';
+import '../../../common/widgets/background_decoration.dart';
+import '../../../network/models/product/product.dart';
+import '../../../router/app_router.dart';
+import 'treats_list_view.dart';
 
 @RoutePage()
 class SweetTreatsView extends StatefulWidget {
@@ -66,7 +67,7 @@ class _SweetTreatsViewState extends State<SweetTreatsView> {
 
   Text _questionText(BuildContext context) {
     return Text(
-      TextConst.treatText,
+      TextConst.instance.treatText,
       textAlign: TextAlign.right,
       style: Theme.of(context).textTheme.displayLarge!.copyWith(
             fontSize: 18,
@@ -91,7 +92,7 @@ class _SweetTreatsViewState extends State<SweetTreatsView> {
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
         ),
-        child: Text(TextConst.noThanks),
+        child: Text(TextConst.instance.noThanks),
       ),
     );
   }

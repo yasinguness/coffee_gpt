@@ -15,22 +15,7 @@ class OutBubble extends StatelessWidget {
       children: [
         if (chatIndex == 0)
           Flexible(
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              margin: const EdgeInsets.only(bottom: 5),
-              decoration: BoxDecoration(
-                color: Colors.indigo.shade600,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(19),
-                  bottomLeft: Radius.circular(19),
-                  bottomRight: Radius.circular(19),
-                ),
-              ),
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white, fontSize: 15),
-              ),
-            ),
+            child: _customerBubble(),
           ),
         CustomPaint(painter: Triangle(Colors.indigo.shade600)),
         if (chatIndex == 1)
@@ -39,37 +24,64 @@ class OutBubble extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(20)),
-                    child: const RiveAnimation.asset("assets/rive/bot.riv"),
-                  ),
+                  child: _img(),
                 ),
                 Expanded(
                   flex: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(15),
-                    margin: const EdgeInsets.only(bottom: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(19),
-                        bottomLeft: Radius.circular(19),
-                        bottomRight: Radius.circular(19),
-                      ),
-                    ),
-                    child: Text(
-                      message,
-                      style: const TextStyle(color: Colors.black, fontSize: 15),
-                    ),
-                  ),
+                  child: _decoration(),
                 ),
               ],
             ),
           ),
         //CustomPaint(painter: Triangle(Colors.indigo.shade600)),
       ],
+    );
+  }
+
+  Container _customerBubble() {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      margin: const EdgeInsets.only(bottom: 5),
+      decoration: BoxDecoration(
+        color: Colors.indigo.shade600,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(19),
+          bottomLeft: Radius.circular(19),
+          bottomRight: Radius.circular(19),
+        ),
+      ),
+      child: Text(
+        message,
+        style: const TextStyle(color: Colors.white, fontSize: 15),
+      ),
+    );
+  }
+
+  Container _img() {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(20)),
+      child: const RiveAnimation.asset("assets/rive/bot.riv"),
+    );
+  }
+
+  Container _decoration() {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      margin: const EdgeInsets.only(bottom: 5),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade300,
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(19),
+          bottomLeft: Radius.circular(19),
+          bottomRight: Radius.circular(19),
+        ),
+      ),
+      child: Text(
+        message,
+        style: const TextStyle(color: Colors.black, fontSize: 15),
+      ),
     );
   }
 }

@@ -1,21 +1,22 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/coffee_padding.dart';
-import 'package:coffe_app/common/constants/text_const.dart';
-import 'package:coffe_app/common/provider/basket_provider.dart';
-import 'package:coffe_app/common/provider/coffe_provider.dart';
-import 'package:coffe_app/common/widgets/app_bar_widget.dart';
-import 'package:coffe_app/common/widgets/background_decoration.dart';
-import 'package:coffe_app/locator.dart';
-import 'package:coffe_app/network/models/order_product/order_product.dart';
-import 'package:coffe_app/network/models/product/product.dart';
-import 'package:coffe_app/network/services/product/product_services.dart';
-import 'package:coffe_app/router/app_router.dart';
-import 'package:coffe_app/ui/base/base_view.dart';
-import 'package:coffe_app/ui/coffe_detail/view_model/coffee_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
+
+import '../../../common/constants/coffee_colors.dart';
+import '../../../common/constants/coffee_padding.dart';
+import '../../../common/constants/text_const.dart';
+import '../../../common/provider/basket_provider.dart';
+import '../../../common/provider/coffe_provider.dart';
+import '../../../common/widgets/app_bar_widget.dart';
+import '../../../common/widgets/background_decoration.dart';
+import '../../../locator.dart';
+import '../../../network/models/order_product/order_product.dart';
+import '../../../network/models/product/product.dart';
+import '../../../network/services/product/product_services.dart';
+import '../../../router/app_router.dart';
+import '../../base/base_view.dart';
+import '../view_model/coffee_detail_model.dart';
 
 @RoutePage()
 class CoffeeDetailView extends StatefulWidget {
@@ -32,9 +33,6 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
     Size size = MediaQuery.of(context).size;
 
     return BaseView<CoffeeDetailViewModel>(
-        //routeObserver: routeObserver,
-        //onDispose: () => routeObserver.unsubscribe(this),
-        //onModelReady: (p0) => p0.getCoffee(widget.coffee!.id!, widget.coffee!.size!),
         builder: (context, value, widget) => value.busy
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -60,7 +58,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
 
   Padding _coffeBody(BuildContext context, CoffeeDetailViewModel value, Size size) {
     return Padding(
-        padding: const EdgeInsets.all(24),
+        padding: CoffeePading.instance.veryHigh,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -74,7 +72,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
             ),
             Expanded(
               flex: 1,
-              child: _button(value, context),
+              child: _button(value, context, size),
             ),
           ],
         ));
@@ -116,24 +114,28 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
     );
   }
 
-  SizedBox _button(CoffeeDetailViewModel value, BuildContext context) {
+  SizedBox _button(CoffeeDetailViewModel value, BuildContext context, Size size) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: CoffeeColors.kTitleColor,
-            alignment: Alignment.centerLeft,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
+          style: _buttonStyle(),
           onPressed: () {
             value.orderProductModel!.product = widget.coffee!;
             value.addToBasket();
             context.router.popAndPush(SweetTreatsRoute(produtModel: widget.coffee));
             //Navigator.pushNamed(context, RouteConst.sweetTreatsView, arguments: widget.coffee);
           },
-          child: _elevatedButtonText(context)),
+          child: _elevatedButtonText(context, size)),
+    );
+  }
+
+  ButtonStyle _buttonStyle() {
+    return ElevatedButton.styleFrom(
+      backgroundColor: CoffeeColors.kTitleColor,
+      alignment: Alignment.centerLeft,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
     );
   }
 
@@ -141,55 +143,62 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: () => model.decrementCounter(),
-          child: Container(
-            decoration: BoxDecoration(
-                color: CoffeeColors.kTitleColor,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
-            child: const Icon(
-              Icons.remove,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        //TODO:Artır butonunu basıldığında buton kayıyor**
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Text(
-            model.coffeeProvider!.productQuantity < 1 ? "1" : model.coffeeProvider!.productQuantity.toString(),
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-        ),
-        GestureDetector(
-          onTap: () => model.incrementCounter(),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-                color: CoffeeColors.kTitleColor,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),
-        )
-      ],
+      children: [_decrementContainer(model), _text(model), _incrementContainer(model)],
     );
   }
 
-  Row _elevatedButtonText(BuildContext context) {
+  Padding _text(CoffeeDetailViewModel model) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Text(
+        model.coffeeProvider!.productQuantity < 1 ? "1" : model.coffeeProvider!.productQuantity.toString(),
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
+    );
+  }
+
+  GestureDetector _incrementContainer(CoffeeDetailViewModel model) {
+    return GestureDetector(
+      onTap: () => model.incrementCounter(),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+            color: CoffeeColors.kTitleColor,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  GestureDetector _decrementContainer(CoffeeDetailViewModel model) {
+    return GestureDetector(
+      onTap: () => model.decrementCounter(),
+      child: Container(
+        decoration: BoxDecoration(
+            color: CoffeeColors.kTitleColor,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
+        child: const Icon(
+          Icons.remove,
+          color: CoffeeColors.white,
+        ),
+      ),
+    );
+  }
+
+  Row _elevatedButtonText(BuildContext context, Size size) {
     return Row(
       children: [
         Text(
-          TextConst.addToCard,
+          TextConst.instance.addToCard,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: CoffeeColors.white),
         ),
-        const SizedBox(
-          width: 5,
+        SizedBox(
+          width: size.width * 0.05,
         ),
         const Icon(
           FeatherIcons.chevronRight,
@@ -231,12 +240,11 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
       children: ['S', 'M', 'L']
           .map((sizeCoffe) => GestureDetector(
                 onTap: () {
-                  //model.coffeeProvider!.orderProduct?.selectedSize = sizeCoffe;
                   model.coffeeProvider!.selectedSize(widget.coffee!, sizeCoffe);
                   model.orderProductModel!.selectedSize = sizeCoffe;
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
+                  padding: CoffeePading.instance.mediumJustRight,
                   child: Container(
                     padding: CoffeePading.instance.mediumHorizontalLowVertical,
                     decoration: BoxDecoration(

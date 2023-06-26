@@ -1,17 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/scrool.dart';
-import 'package:coffe_app/common/widgets/app_bar_widget.dart';
-import 'package:coffe_app/common/widgets/background_decoration.dart';
-import 'package:coffe_app/locator.dart';
-import 'package:coffe_app/network/services/product/product_services.dart';
-import 'package:coffe_app/router/app_router.dart';
-import 'package:coffe_app/ui/base/base_view.dart';
-import 'package:coffe_app/ui/coffeeGpt/view/chat_screen.dart';
-import 'package:coffe_app/ui/coffee_list/view_model/coffee_list_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+
+import '../../../common/constants/coffee_colors.dart';
+import '../../../common/constants/scrool.dart';
+import '../../../common/widgets/app_bar_widget.dart';
+import '../../../common/widgets/background_decoration.dart';
+import '../../../locator.dart';
+import '../../../network/services/product/product_services.dart';
+import '../../../router/app_router.dart';
+import '../../base/base_view.dart';
+import '../view_model/coffee_list_view_model.dart';
 
 @RoutePage()
 class CoffeeListView extends StatefulWidget {
@@ -42,7 +41,6 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = AnimationController(
       vsync: this,
@@ -59,9 +57,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _controller.dispose();
-
     _coffeeController.removeListener(_navigationListener);
     super.dispose();
   }
@@ -99,38 +95,9 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [_coffeNameBuilder(size, value), _buildOverlays()],
+        children: [_coffeNameBuilder(size, value), _buildOverlays(size)],
       ),
     );
-  }
-
-  FloatingActionButton _fabButton(BuildContext context) {
-    return FloatingActionButton.large(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return const ChatScreenView();
-            },
-          );
-        },
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        child: LottieBuilder.asset(
-          "assets/lottie/question.json",
-          width: 75,
-          animate: true,
-          reverse: false,
-          repeat: true,
-          controller: _controller,
-          onLoaded: (composition) {
-            // Configure the AnimationController with the duration of the
-            // Lottie file and start the animation.
-            _controller
-              ..duration = composition.duration
-              ..forward();
-          },
-        ));
   }
 
   SizedBox _coffeNameBuilder(Size size, CoffeListViewModel value) {
@@ -147,7 +114,6 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
             return const SizedBox.shrink();
           }
           return Column(
-            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [_name(value, index, context), _price(value, index, context)],
           );
         },
@@ -196,25 +162,28 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
               (1 - scale).abs() * MediaQuery.of(context).size.height / 1.5 + 20 * (distance - 1).clamp(0.0, 1);
           return Padding(
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1),
-            child: Transform(
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.001)
-                  ..translate(0.0, !isNotOnScreen ? 0.0 : translateY)
-                  ..scale(scale),
-                alignment: Alignment.bottomCenter,
-                child: GestureDetector(
-                  onTap: () {
-                    var currentUser = value.coffees![index - 1];
-                    print(context.router.stack);
-                    context.router.push(CoffeeDetailRoute(coffee: currentUser));
-                    //Navigator.pushNamed(context, RouteConst.coffeeDetailView, arguments: currentUser);
-                  },
-                  child: _coffeeImage(value, index),
-                )),
+            child: _transform(isNotOnScreen, translateY, scale, value, index, context),
           );
         },
       ),
     );
+  }
+
+  Transform _transform(
+      bool isNotOnScreen, double translateY, double scale, CoffeListViewModel value, int index, BuildContext context) {
+    return Transform(
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.001)
+          ..translate(0.0, !isNotOnScreen ? 0.0 : translateY)
+          ..scale(scale),
+        alignment: Alignment.bottomCenter,
+        child: GestureDetector(
+          onTap: () {
+            var currentUser = value.coffees![index - 1];
+            context.router.push(CoffeeDetailRoute(coffee: currentUser));
+          },
+          child: _coffeeImage(value, index),
+        ));
   }
 
   Hero _coffeeImage(CoffeListViewModel value, int index) {
@@ -237,7 +206,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
   }
 
   Widget _backgroundAlign(Size size) {
-    return _bottomCenterAlign(size); /*  _leftCenterAlign(), _rightBottomAlign(size) */
+    return _bottomCenterAlign(size);
   }
 
   Align _bottomCenterAlign(Size size) {
@@ -248,7 +217,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
         height: size.height * 0.4,
         decoration: const BoxDecoration(
           boxShadow: [
-            BoxShadow(color: Colors.brown, blurRadius: 90, spreadRadius: 60, offset: Offset.zero),
+            BoxShadow(color: CoffeeColors.kBrownColor, blurRadius: 90, spreadRadius: 60, offset: Offset.zero),
           ],
           shape: BoxShape.rectangle,
         ),
@@ -256,12 +225,12 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
     );
   }
 
-  Expanded _buildOverlays() {
+  Expanded _buildOverlays(Size size) {
     return Expanded(
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          height: 50,
+          height: size.height * .01,
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(

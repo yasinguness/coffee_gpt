@@ -13,9 +13,12 @@ class CoffeePading {
   final double highValue = 16.0;
   final double veryHighValue = 24.0;
 
+  //Synmetric
+
   EdgeInsets get lowHorizontal => EdgeInsets.symmetric(horizontal: lowValue);
 
   EdgeInsets get mediumHorizontal => EdgeInsets.symmetric(horizontal: mediumValue);
+  EdgeInsets get mediumHorizontalAndVertical => EdgeInsets.symmetric(horizontal: mediumValue, vertical: mediumValue);
 
   EdgeInsets get highHorizontal => EdgeInsets.symmetric(horizontal: highValue);
 
@@ -28,6 +31,8 @@ class CoffeePading {
   EdgeInsets get highVertical => EdgeInsets.symmetric(vertical: highValue);
 
   EdgeInsets get veryHighVertical => EdgeInsets.symmetric(vertical: veryHighValue);
+
+  //EdgeInsets.all
 
   EdgeInsets get low => EdgeInsets.all(lowValue);
 
@@ -66,4 +71,6 @@ class CoffeePading {
 
   EdgeInsets get veryHighHorizontalHighVertical =>
       EdgeInsets.symmetric(horizontal: veryHighValue, vertical: veryHighValue);
+
+  EdgeInsets get mediumJustRight => EdgeInsets.only(right: mediumValue);
 }

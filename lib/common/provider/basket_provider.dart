@@ -1,20 +1,19 @@
-import 'package:coffe_app/common/provider/coffe_provider.dart';
-import 'package:coffe_app/network/models/order_product/order_product.dart';
 import 'package:flutter/cupertino.dart';
 
-class BasketProvider extends ChangeNotifier {
-  CoffeeProvider? coffeeProvider;
-  final List<OrderProductModel> _products = [];
+import '../../network/models/order_product/order_product.dart';
 
+class BasketProvider extends ChangeNotifier {
+  final List<OrderProductModel> _products = [];
   List<OrderProductModel>? get basketProducts => _products;
 
-  int basketCounter = 0;
-  List<int>? quantity = [];
+  final List<int> _quantity = [];
+  List<int>? get quantity => _quantity;
+
   double totalPrice = 0;
+  int basketCounter = 0;
 
   void addProductToBasket(OrderProductModel orderProduct, int productQuant, {double? price}) {
     final index = findProductIndex(orderProduct);
-
     if (index != -1) {
       _products[index].amount = _products[index].amount! + productQuant;
 

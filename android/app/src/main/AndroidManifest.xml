@@ -1,9 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.coffe_app">
+    package="com.example.coffe_app"
+    xmlns:tools="http://schemas.android.com/tools"
+>
    <application
         android:label="coffe_app"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:label"
+>
         <activity
             android:name=".MainActivity"
             android:exported="true"

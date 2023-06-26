@@ -1,19 +1,21 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/text_const.dart';
-import 'package:coffe_app/common/provider/basket_provider.dart';
-import 'package:coffe_app/common/provider/coffe_provider.dart';
-import 'package:coffe_app/common/provider/customer_provider.dart';
-import 'package:coffe_app/common/widgets/app_bar_widget.dart';
-import 'package:coffe_app/common/widgets/background_decoration.dart';
-import 'package:coffe_app/locator.dart';
-import 'package:coffe_app/network/models/order/order.dart';
-import 'package:coffe_app/network/services/order/order_service.dart';
-import 'package:coffe_app/router/app_router.dart';
-import 'package:coffe_app/ui/base/base_view.dart';
-import 'package:coffe_app/ui/checkout/view_model/checkout_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../common/constants/coffee_colors.dart';
+import '../../../common/constants/coffee_padding.dart';
+import '../../../common/constants/text_const.dart';
+import '../../../common/provider/basket_provider.dart';
+import '../../../common/provider/coffe_provider.dart';
+import '../../../common/provider/customer_provider.dart';
+import '../../../common/widgets/app_bar_widget.dart';
+import '../../../common/widgets/background_decoration.dart';
+import '../../../locator.dart';
+import '../../../network/models/order/order.dart';
+import '../../../network/services/order/order_service.dart';
+import '../../../router/app_router.dart';
+import '../../base/base_view.dart';
+import '../view_model/checkout_view_model.dart';
 
 @RoutePage()
 class CheckoutView extends StatefulWidget {
@@ -28,8 +30,6 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return BaseView<CheckoutViewModel>(
-      //routeObserver: routeObserver,
-      //onDispose: () => routeObserver.unsubscribe(this),
       builder: (context, value, wtg) {
         return value.busy
             ? const Center(
@@ -44,7 +44,6 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         coffeeProvider: Provider.of<CoffeeProvider>(context),
         customerProvider: Provider.of<CustomerProvider>(context),
       ),
-      //onModelReady: (p0) => p0.getCoffeePrice(),
     );
   }
 
@@ -56,7 +55,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         children: [
           _buildBackground(),
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: CoffeePading.instance.veryHigh / 2,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -66,9 +65,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
                 ),
                 _orderList(size, value),
                 const Spacer(),
-                Text(value.basketProvider!.totalPrice.toString()),
                 _checkoutButton(value)
-                /* coffee.price + (treat?.price ?? 0)).toStringAsFixed(2) */
               ],
             ),
           )
@@ -147,50 +144,57 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () => model.basketProvider!.decreaseQuantity(index),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: CoffeeColors.kTitleColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
-              child: const Icon(
-                Icons.remove,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          //TODO:Artır butonunu basıldığında buton kayıyor**
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Text(
-              model.basketProvider!.quantity![index].toString(),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-          GestureDetector(
-            onTap: () => model.basketProvider!.increaseQuantity(index),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              decoration: BoxDecoration(
-                  color: CoffeeColors.kTitleColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ),
-          )
-        ],
+        children: [_decreaseContainer(model, index), _quantityText(model, index), _increaseContainer(model, index)],
+      ),
+    );
+  }
+
+  GestureDetector _decreaseContainer(CheckoutViewModel model, int index) {
+    return GestureDetector(
+      onTap: () => model.basketProvider!.decreaseQuantity(index),
+      child: Container(
+        decoration: BoxDecoration(
+            color: CoffeeColors.kTitleColor,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
+        child: const Icon(
+          Icons.remove,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Padding _quantityText(CheckoutViewModel model, int index) {
+    return Padding(
+      padding: CoffeePading.instance.mediumHorizontalAndVertical,
+      child: Text(
+        model.basketProvider!.quantity![index].toString(),
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+    );
+  }
+
+  GestureDetector _increaseContainer(CheckoutViewModel model, int index) {
+    return GestureDetector(
+      onTap: () => model.basketProvider!.increaseQuantity(index),
+      child: Container(
+        margin: CoffeePading.instance.lowHorizontal,
+        decoration: BoxDecoration(
+            color: CoffeeColors.kTitleColor,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: CoffeeColors.kTitleColor, width: 2)),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
 
   Text _myOrders(BuildContext context) {
     return Text(
-      TextConst.orderText,
+      TextConst.instance.orderText,
       style: Theme.of(context).textTheme.displayLarge,
     );
   }
@@ -215,9 +219,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     return Expanded(
       flex: 1,
       child: Text(
-        //TODO: Price olayını düzelt
         (model.basketProvider!.basketProducts![index].currentPrice).toString(),
-
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
@@ -231,7 +233,6 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     return Expanded(
       flex: 1,
       child: Text(
-        //TODO: Price olayını düzelt
         model.basketProvider!.basketProducts![index].selectedSize == null
             ? model.basketProvider!.basketProducts![index].selectedSize = 'M'
             : model.basketProvider!.basketProducts![index].selectedSize.toString(),
@@ -278,15 +279,15 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
                 const CircularProgressIndicator();
                 context.router.removeUntil((route) => false);
                 context.router.push(const CoffeeListRoute());
-                //push(coffeeList) eski hali
               });
             }
           } else {
-            if (mounted) {}
-            ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+            }
           }
         },
-        child: const Text("Checkout Price"));
+        child: const Text("Sipariş Ver"));
   }
 }
 

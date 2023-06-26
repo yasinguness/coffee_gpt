@@ -3,48 +3,42 @@ part of "../themes/coffe_theme.dart";
 class _TextTheme {
   static TextTheme get textTheme {
     return const TextTheme(
-      headline1: TextStyle(
+      displayLarge: TextStyle(
         fontSize: 30,
         color: CoffeeColors.kTitleColor,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.bold,
         letterSpacing: 0,
       ),
-      headline2: TextStyle(
+      displayMedium: TextStyle(
         fontSize: 28,
         color: CoffeeColors.kTitleColor,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.normal,
         letterSpacing: 0,
       ),
-      headline3: TextStyle(
+      displaySmall: TextStyle(
         fontSize: 26,
         color: CoffeeColors.kTitleColor,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.normal,
         letterSpacing: 0,
       ),
-      subtitle1: TextStyle(
+      bodyMedium: TextStyle(color: CoffeeColors.white, fontSize: 18, fontWeight: FontWeight.w600),
+      titleMedium: TextStyle(
         fontSize: 16,
         color: CoffeeColors.kTitleColor,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.normal,
       ),
-      bodyText2: TextStyle(
-        fontSize: 14,
-        color: CoffeeColors.kTitleColor,
-        fontWeight: FontWeight.normal,
-        fontStyle: FontStyle.normal,
-        letterSpacing: 0,
-      ),
-      caption: TextStyle(
+      bodySmall: TextStyle(
         fontSize: 12,
         color: CoffeeColors.kTitleColor,
         fontStyle: FontStyle.normal,
         fontWeight: FontWeight.normal,
         letterSpacing: 0,
       ),
-      overline: TextStyle(
+      labelSmall: TextStyle(
         fontSize: 10,
         color: CoffeeColors.kTitleColor,
         fontStyle: FontStyle.normal,

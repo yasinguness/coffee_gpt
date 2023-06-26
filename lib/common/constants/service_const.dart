@@ -1,1 +1,2 @@
-String BASE_URL = "http://192.168.1.33:3000";
+// ignore: non_constant_identifier_names
+String BASE_URL = "http://192.168.31.87:3000";

@@ -1,14 +1,21 @@
-import 'package:coffe_app/network/models/product/product.dart';
-import 'package:coffe_app/network/services/product/product_services.dart';
-import 'package:coffe_app/ui/base/base_model.dart';
+import '../../../network/models/product/product.dart';
+import '../../../network/services/product/product_services.dart';
+import '../../base/base_model.dart';
 
 class CoffeListViewModel extends BaseModel {
   final ProductServices? coffeeServices;
 
   CoffeListViewModel({this.coffeeServices});
-  int? index = 0;
+
+  int _index = 0;
+  int? get index => _index;
+
+  set index(int? ind) {
+    _index = ind!;
+  }
 
   List<ProductModel>? coffees;
+
   Future fetchCoffees() async {
     setBusy(true);
     coffees = await coffeeServices!.getCoffee();

@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:coffe_app/common/constants/service_const.dart';
-import 'package:coffe_app/common/service/base_service.dart';
-import 'package:coffe_app/network/models/order/order.dart';
+import '../../../common/constants/service_const.dart';
+import '../../../common/service/base_service.dart';
+import '../../models/order/order.dart';
 
 class OrderService extends BaseService {
   Future<List<OrderModel>?> fetchOrders() async {
@@ -35,11 +35,9 @@ class OrderService extends BaseService {
         data: postOrders, /*  options: Options(headers: {'Content-Type': 'application/json'}) */
       );
       if (response.statusCode == HttpStatus.created) {
-        print("Başarılı");
         return true;
       }
     } catch (e) {
-      print("Sipariş verilemedi $e");
       return false;
     }
     return null;

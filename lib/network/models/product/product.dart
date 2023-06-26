@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'product.g.dart';
 
 @JsonSerializable()
@@ -45,8 +46,5 @@ class ProductModel {
       size: size ?? this.size,
       isSweet: isSweet ?? this.isSweet,
     );
-  } /*  @override
-  // TODO: implement props
-  List<Object?> get props =>
-      [id, name, description, image, size, price, smallPrice, largePrice, quantitiy, createdAt, updatedAt, isSweet]; */
+  }
 }

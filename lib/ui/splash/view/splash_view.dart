@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/widgets/app_bar_widget.dart';
-import 'package:coffe_app/router/app_router.dart';
 import 'package:flutter/material.dart';
+
+import '../../../common/constants/coffee_colors.dart';
+import '../../../common/widgets/app_bar_widget.dart';
+import '../../../common/widgets/intro_text.dart';
+import '../../../router/app_router.dart';
 
 @RoutePage()
 class SplashView extends StatefulWidget {
@@ -15,7 +17,6 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(
       const Duration(milliseconds: 1500),
@@ -35,7 +36,6 @@ class _SplashViewState extends State<SplashView> {
           body: Stack(
             children: [
               ...[1, 2, 3, 4].map((index) {
-                //TODO:Buralara bak
                 double scale = 1.0 + (index - 1) * 0.32 + (index == 4 ? 0.3 : 0);
                 double translate = (index - 1) * 100.0 + (index == 4 ? 160 : 0);
                 return _image(translate, scale, index);
@@ -96,26 +96,5 @@ class _SplashViewState extends State<SplashView> {
         ],
       ),
     );
-  }
-}
-
-class IntroText extends StatelessWidget {
-  final String text;
-  final double fontSize;
-  final FontWeight fontWeight;
-  const IntroText({
-    Key? key,
-    required this.text,
-    required this.fontSize,
-    required this.fontWeight,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(text,
-        style: Theme.of(context)
-            .textTheme
-            .displayLarge!
-            .copyWith(fontSize: fontSize, fontWeight: fontWeight, color: CoffeeColors.black));
   }
 }

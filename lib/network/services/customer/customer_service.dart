@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:coffe_app/common/constants/service_const.dart';
-import 'package:coffe_app/common/service/base_service.dart';
-import 'package:coffe_app/network/models/customer/customer.dart';
 import 'package:dio/dio.dart';
+
+import '../../../common/constants/service_const.dart';
+import '../../../common/service/base_service.dart';
+import '../../models/customer/customer.dart';
 
 class CustomerService extends BaseService {
   Future<List<CustomerModel>?> fetchCustomers() async {
@@ -31,7 +32,7 @@ class CustomerService extends BaseService {
         return CustomerModel.fromJson(data);
       }
     } catch (e) {
-      print("Müşteri oluşturulamadı");
+      rethrow;
     }
     return null;
   }

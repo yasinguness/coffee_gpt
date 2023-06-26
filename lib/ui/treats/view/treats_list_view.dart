@@ -1,14 +1,14 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/constants/scrool.dart';
-import 'package:coffe_app/common/provider/basket_provider.dart';
-import 'package:coffe_app/locator.dart';
-import 'package:coffe_app/network/models/order_product/order_product.dart';
-import 'package:coffe_app/network/models/product/product.dart';
-import 'package:coffe_app/network/services/product/product_services.dart';
-import 'package:coffe_app/router/app_router.dart';
-import 'package:coffe_app/ui/base/base_view.dart';
-import 'package:coffe_app/ui/treats/view_model/treats_view_model.dart';
+import '../../../common/constants/coffee_colors.dart';
+import '../../../common/constants/scrool.dart';
+import '../../../common/provider/basket_provider.dart';
+import '../../../locator.dart';
+import '../../../network/models/order_product/order_product.dart';
+import '../../../network/models/product/product.dart';
+import '../../../network/services/product/product_services.dart';
+import '../../../router/app_router.dart';
+import '../../base/base_view.dart';
+import '../view_model/treats_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +31,6 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
   void _navigationListener() {
     setState(() {
       _currentPosition = _treatsController.page!;
-      // print(_currentPosition);
       if (_currentPosition.round() != _currentHeading) {
         _currentHeading = _currentPosition.round();
         _headingController.animateToPage(_currentHeading,
@@ -65,8 +64,6 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
     var basket = Provider.of<BasketProvider>(context);
 
     return BaseView<TreatsViewModel>(
-        //routeObserver: routeObserver,
-        //onDispose: () => routeObserver.unsubscribe(this),
         builder: (context, value, widget) => value.busy
             ? const Center(
                 child: CircularProgressIndicator(),

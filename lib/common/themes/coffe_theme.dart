@@ -1,7 +1,10 @@
-import 'package:coffe_app/common/constants/coffee_colors.dart';
 import 'package:flutter/material.dart';
+
+import '../constants/coffee_colors.dart';
+
 part "../themes/text_theme.dart";
 
+// ignore: constant_identifier_names
 const String FONT_FAM = "Montserrat";
 
 final ThemeData coffeeTheme = ThemeData(

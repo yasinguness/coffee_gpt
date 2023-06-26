@@ -2,17 +2,19 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:coffe_app/common/constants/chat_api_const.dart';
-import 'package:coffe_app/network/models/gpt/chat_model.dart';
-import 'package:coffe_app/network/models/gpt/models_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../common/constants/chat_api_const.dart';
+import '../../models/gpt/chat_model.dart';
+import '../../models/gpt/models_model.dart';
 
 class ChatGptServices {
   Future<List<ModelsModel>> getModels() async {
     try {
       var response = await http.get(
-        Uri.parse("$Base_Url/models"),
-        headers: {'Authorization': 'Bearer $BEARER_KEY'},
+        Uri.parse("$BASE_URL/models"),
+        headers: {'Authorization': 'Bearer ${dotenv.env['BEARER_KEY']}'},
       );
 
       Map jsonResponse = jsonDecode(response.body);
@@ -33,8 +35,8 @@ class ChatGptServices {
   Future<List<ChatModel>> sendMessage({required String message}) async {
     try {
       var response = await http.post(
-        Uri.parse("$Base_Url/completions"),
-        headers: {'Authorization': 'Bearer $BEARER_KEY', "Content-Type": "application/json"},
+        Uri.parse("$BASE_URL/completions"),
+        headers: {'Authorization': 'Bearer ${dotenv.env['BEARER_KEY']}', "Content-Type": "application/json"},
         body: jsonEncode(
           {"model": "text-davinci-003", "prompt": message, "max_tokens": 300},
         ),
@@ -65,30 +67,29 @@ class ChatGptServices {
   Future<List<ChatModel>> sendMessageGPT({required String message}) async {
     try {
       var response = await http.post(
-        Uri.parse("$Base_Url/chat/completions"),
-        headers: {'Authorization': 'Bearer $BEARER_KEY', "Content-Type": "application/json"},
+        Uri.parse("$BASE_URL/chat/completions"),
+        headers: {'Authorization': 'Bearer ${dotenv.env['BEARER_KEY']}', "Content-Type": "application/json"},
         body: jsonEncode(
           {
             "model": "gpt-3.5-turbo",
             "messages": [
               {
-                "role": "user",
-                "content": message,
-              }
+                "role": "system",
+                "content":
+                    "Sen yardımcı asistansın. Adın Cofi. CoffeGpt adında bir kahve sipariş uygulaması için kullanılıyorsun. Bu uygulamada müşteriler kahve siparişi verebiliyor veya sipariş edecekleri kahve için kararsızlarsa sana danışıyorlar. Müşterilerin isteklerine göre en uygun kahveyi öneriyorsun.  Sana uygulamadaki menüyü sorduklarında menünün içeriğinde şunların olduğunu söylüyorsun; Iced Vietnam Coffee , Caramel Machiato, Coffee Mocha, Coffee Latte ,Iced Caramel Machiato, Espresso. Sana belirli bir kahveyi sipariş vermek istediği söylediğinde kahvenyi Small,Medium,Large olandan hangisini istediğini sorar mısın ? Ardından müşteriye belirttiği kahveden kaç adet sipariş vermek istediğini sorar mısın ? Son olarak da tatlı eklemek isteyip istemediğini sorar mısın ? Tatlılar: Chesscake ve Donut. Tatlılar için boyut sorma lütfen. En sonunda bütün sorulara cevap verdikten sonra siparişiniz şu şekilde oluşturulacaktır diye bütün bilgileri toplayıp gösterir misin ?   Eğer sana kahve siparişi veya kahve önerisi dışında başka bir konu hakkında soru sorduklarında onlara bunu cevaplamayacağını, senin sadece sanal barista olduğunu söylüyorsun. Yani kahve ile ilgili bir konu dışında gelene sorulara kesinlikle cevap vermiyorsun ?"
+              },
+              {"role": "user", "content": message}
             ]
           },
         ),
       );
 
-      // Map jsonResponse = jsonDecode(response.body);
       Map jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       if (jsonResponse['error'] != null) {
-        // print("jsonResponse['error'] ${jsonResponse['error']["message"]}");
         throw HttpException(jsonResponse['error']["message"]);
       }
       List<ChatModel> chatList = [];
       if (jsonResponse["choices"].length > 0) {
-        // log("jsonResponse[choices]text ${jsonResponse["choices"][0]["text"]}");
         chatList = List.generate(
           jsonResponse["choices"].length,
           (index) => ChatModel(

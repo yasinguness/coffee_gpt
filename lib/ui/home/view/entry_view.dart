@@ -1,10 +1,14 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/widgets/app_bar_widget.dart';
-import 'package:coffe_app/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+
+import '../../../common/constants/assets_const.dart';
+import '../../../common/constants/coffee_colors.dart';
+import '../../../common/constants/coffee_padding.dart';
+import '../../../common/constants/text_const.dart';
+import '../../../common/widgets/app_bar_widget.dart';
+import '../../../router/app_router.dart';
 
 @RoutePage()
 class EntryView extends StatefulWidget {
@@ -17,10 +21,8 @@ class EntryView extends StatefulWidget {
 class _EntryViewState extends State<EntryView> {
   late RiveAnimationController riveAnimationController;
   late RiveAnimationController riveAnimationControllerBot;
-  bool isHovered = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     riveAnimationController = OneShotAnimation('bounce');
     riveAnimationControllerBot = OneShotAnimation('bot');
@@ -29,97 +31,114 @@ class _EntryViewState extends State<EntryView> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    bool isHovered = true;
     return Scaffold(
       appBar: const CustomAppBar(),
-      backgroundColor: Colors.white,
+      backgroundColor: CoffeeColors.white,
       body: Column(
         children: [
-          Expanded(flex: 5, child: _topCard(size, context, isHovered)),
-          Expanded(
-            flex: 5,
-            child: _bottomCard(context, size),
-          ),
+          _coffiRoboCard(size, context),
+          _productListCard(size, context),
         ],
       ),
     );
   }
 
-  Padding _bottomCard(BuildContext context, Size size) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 16,
-        color: const Color(0xFFECDAC2),
-        child: Stack(children: [_coffeImage(size), _positionedText(size), _listButton(context, size)]),
+  Expanded _coffiRoboCard(Size size, BuildContext context) {
+    return Expanded(
+        flex: 5,
+        child: Padding(
+          padding: CoffeePading.instance.medium,
+          child: Card(
+            elevation: 16,
+            color: const Color(0xFFECDAC2),
+            child: Stack(children: [
+              _coffiImage(context),
+              _coffiDesc(size, context),
+            ]),
+          ),
+        ));
+  }
+
+  Positioned _coffiDesc(Size size, BuildContext context) {
+    return Positioned(
+        left: size.width * .05,
+        top: size.height * .01,
+        child: SizedBox(
+          width: size.width * .6,
+          height: size.height * 0.38,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(flex: 3, child: _title(context)),
+              Expanded(flex: 9, child: _mediumTitle(context)),
+              Expanded(flex: 2, child: _roboButon()),
+              SizedBox(height: size.height * .01),
+            ],
+          ),
+        ));
+  }
+
+  Positioned _coffiImage(BuildContext context) {
+    return Positioned(
+      left: MediaQuery.of(context).size.width * 0.5,
+      top: MediaQuery.of(context).size.height * 0.01,
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.4,
+        width: MediaQuery.of(context).size.width * 0.5,
+        child: RiveAnimation.asset(AssetConst.instance.coffiAsset,
+            alignment: Alignment.centerRight, controllers: [riveAnimationControllerBot]),
       ),
     );
   }
 
-  Padding _topCard(Size size, BuildContext context, bool isHovered) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 16,
-        color: const Color(0xFFECDAC2),
-        child: Stack(children: [
-          _robot(),
-          Positioned(
-              left: 10,
-              top: 5,
-              child: SizedBox(
-                width: 220,
-                height: size.height * 0.38,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 3, child: _title(context)),
-                    Expanded(flex: 9, child: _mediumTitle(context)),
-                    Expanded(flex: 2, child: _roboButon(isHovered)),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                  ],
-                ),
-              )),
-        ]),
+  Expanded _productListCard(Size size, BuildContext context) {
+    return Expanded(
+      flex: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          elevation: 16,
+          color: const Color(0xFFECDAC2),
+          child: Stack(children: [_coffeImage(size), _positionedText(size), _listButton(context, size)]),
+        ),
       ),
     );
   }
 
   Positioned _listButton(BuildContext context, Size size) {
     return Positioned(
-      right: 10,
+      right: size.height * .01,
       top: size.height * 0.3,
       child: SizedBox(
-        height: 50,
-        width: 180,
+        height: size.height * .07,
+        width: size.width * .45,
         child: ElevatedButton(
           onPressed: () {
             context.router.push(const CoffeeListRoute());
           },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: CoffeeColors.kTitleColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              textStyle: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              )),
-          child: const Text('Ürün Listesi'),
+          style: _listButtonStyles(context),
+          child: Text(TextConst.instance.productListText),
         ),
       ),
     );
   }
 
+  ButtonStyle _listButtonStyles(BuildContext context) {
+    return ElevatedButton.styleFrom(
+        backgroundColor: CoffeeColors.kTitleColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: CoffeeColors.white));
+  }
+
   Positioned _positionedText(Size size) {
     return Positioned(
-      right: 10,
+      right: size.height * .01,
       bottom: size.height * 0.1,
       child: SafeArea(
         child: SizedBox(
-          width: 180,
+          width: size.width * 0.5,
           height: size.height * 0.3,
           child: Expanded(
             child: _animatedText(),
@@ -129,22 +148,15 @@ class _EntryViewState extends State<EntryView> {
     );
   }
 
-  Text _text() {
-    return const Text(
-      'Hemen',
-      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700, color: CoffeeColors.kTitleColor),
-    );
-  }
-
   DefaultTextStyle _animatedText() {
     return DefaultTextStyle(
-      style: const TextStyle(
+      style: Theme.of(context).textTheme.displayLarge!.copyWith(
           fontSize: 40.0, fontFamily: 'Montserrat', fontWeight: FontWeight.w800, color: CoffeeColors.kTitleColor),
       child: AnimatedTextKit(
         animatedTexts: [
-          RotateAnimatedText('KOLAY KARAR VER'),
-          RotateAnimatedText('HIZLI SİPARİŞ VER'),
-          RotateAnimatedText('HEMEN GELSİN'),
+          RotateAnimatedText(TextConst.instance.animatedText1),
+          RotateAnimatedText(TextConst.instance.animatedText2),
+          RotateAnimatedText(TextConst.instance.animatedText3),
         ],
         onTap: () {},
       ),
@@ -153,12 +165,12 @@ class _EntryViewState extends State<EntryView> {
 
   Positioned _coffeImage(Size size) {
     return Positioned(
-      right: 75,
+      right: size.height * .1,
       child: SizedBox(
         width: size.width,
         height: size.height * .4,
         child: RiveAnimation.asset(
-          "assets/rive/donut.riv",
+          AssetConst.instance.homeCoffeRive,
           fit: BoxFit.fill,
           controllers: [riveAnimationController],
         ),
@@ -168,7 +180,7 @@ class _EntryViewState extends State<EntryView> {
 
   Text _title(BuildContext context) {
     return Text(
-      "Yardım etmemi ister misin ?",
+      TextConst.instance.titleCoffi,
       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
           fontSize: 24,
           fontFamily: "Montserrat",
@@ -180,7 +192,7 @@ class _EntryViewState extends State<EntryView> {
 
   Text _mediumTitle(BuildContext context) {
     return Text(
-      "Hey! Ben sanal barista Cofi. Benimle birlikte hangi lezzette kahve içmekten hoşlandığına karar verebilirsin. Senin için en güzel kahveyi bulmamız için haydi hemen soru sormaya başla!!",
+      TextConst.instance.coffiDesc,
       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
           fontSize: 16,
           fontFamily: "Montserrat",
@@ -190,7 +202,7 @@ class _EntryViewState extends State<EntryView> {
     );
   }
 
-  ElevatedButton _roboButon(bool isHovered) {
+  ElevatedButton _roboButon() {
     return ElevatedButton(
       onPressed: () {
         context.router.push(const ChatScreenRoute());
@@ -198,26 +210,13 @@ class _EntryViewState extends State<EntryView> {
       style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(CoffeePading.instance.mediumValue),
           ),
-          textStyle: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          )),
-      child: const Text("Cofiye Sor"),
-    );
-  }
-
-  Positioned _robot() {
-    return Positioned(
-      left: 200,
-      top: 10,
-      child: SizedBox(
-        height: 300,
-        width: 200,
-        child: RiveAnimation.asset("assets/rive/bot.riv",
-            alignment: Alignment.centerRight, controllers: [riveAnimationControllerBot]),
-      ),
+          textStyle: Theme.of(context)
+              .textTheme
+              .titleMedium!
+              .copyWith(color: CoffeeColors.white, fontWeight: FontWeight.bold)),
+      child: Text(TextConst.instance.askCoffi),
     );
   }
 }

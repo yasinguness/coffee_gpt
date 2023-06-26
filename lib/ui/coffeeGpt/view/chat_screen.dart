@@ -1,17 +1,19 @@
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:coffe_app/common/constants/coffee_colors.dart';
-import 'package:coffe_app/common/widgets/app_bar_widget.dart';
-import 'package:coffe_app/common/widgets/chat_bubble_widget/message_bubble.dart';
-import 'package:coffe_app/locator.dart';
-import 'package:coffe_app/main.dart';
-import 'package:coffe_app/network/services/chat_gpt/chat_gpt_service.dart';
-import 'package:coffe_app/ui/base/base_view.dart';
-import 'package:coffe_app/common/widgets/text_widget.dart';
-import 'package:coffe_app/ui/coffeeGpt/view_model/coffee_gpt_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:rive/rive.dart';
+
+import '../../../common/constants/coffee_colors.dart';
+import '../../../common/widgets/app_bar_widget.dart';
+import '../../../common/widgets/chat_bubble_widget/message_bubble.dart';
+import '../../../common/widgets/text_widget.dart';
+import '../../../locator.dart';
+import '../../../main.dart';
+import '../../../network/services/chat_gpt/chat_gpt_service.dart';
+import '../../base/base_view.dart';
+import '../view_model/coffee_gpt_view_model.dart';
 
 @RoutePage()
 class ChatScreenView extends StatefulWidget {
@@ -31,11 +33,10 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
   @override
   @override
   void initState() {
-    // TODO: implement initState
     textEditingController = TextEditingController();
     scrollController = ScrollController();
     node = FocusNode();
-    controller = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
     scaleAnimation = CurvedAnimation(parent: controller, curve: Curves.elasticInOut);
 
     controller.addListener(() {
@@ -48,7 +49,6 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
 
   @override
   void dispose() {
-    // TODO: implement dispose
     textEditingController.dispose();
     scrollController.dispose();
     node.dispose();
@@ -63,8 +63,60 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
       builder: (context, value, widget) => ScaleTransition(
         scale: scaleAnimation,
         child: Scaffold(
-          backgroundColor: const Color.fromARGB(255, 55, 52, 53),
-          appBar: const CustomAppBar(backgroundColor: CoffeeColors.kBrownColor),
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          appBar: CustomAppBar(
+              backgroundColor: CoffeeColors.kBrownColor,
+              title: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(20)),
+                        child: const RiveAnimation.asset("assets/rive/bot.riv"),
+                      ),
+                      Positioned(
+                        bottom: 1,
+                        right: 1,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(),
+                            color: const Color.fromARGB(255, 28, 209, 34),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 2,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        "Coffi",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      Text(
+                        "Online",
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white, fontSize: 10),
+                      )
+                    ],
+                  )
+                ],
+              )),
           body: SafeArea(
               child: Column(
             children: [
@@ -72,12 +124,11 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
                 height: 8,
               ),
               const OutBubble(
-                  message: "Merhaba, Ben Cofi. Ne çeşit bir kahve içmek istediğini biraz açıklayabilir misin ?",
-                  chatIndex: 1),
+                  message: "Merhaba, Ben sanal barista Cofi. Sana nasıl yardımcı olabilirim ?", chatIndex: 1),
               _messageList(value),
               if (_isTyping) ...[
                 const SpinKitThreeBounce(
-                  color: Colors.black,
+                  color: Color.fromARGB(255, 104, 99, 99),
                   size: 18,
                 ),
               ],
@@ -85,7 +136,10 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
                 height: 16,
               ),
               Container(
-                color: Colors.white,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -95,14 +149,14 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
                         focusNode: node,
                         style: Theme.of(context).textTheme.bodyLarge,
                         controller: textEditingController,
-                        onSubmitted: (value2) async {
-                          await sendMessageFCT(value);
+                        onSubmitted: (value2) {
+                          //sendMessageFCT(value);
                         },
                         decoration: _textFieldDecoration(context),
                       )),
                       IconButton(
-                        onPressed: () async {
-                          await sendMessageFCT(value);
+                        onPressed: () {
+                          sendMessageFCT(value);
                         },
                         icon: const Icon(Icons.send),
                         color: Colors.black,
@@ -132,12 +186,7 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
 
   InputDecoration _textFieldDecoration(BuildContext context) {
     return InputDecoration(
-        /* focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(width: 2, color: Colors.black)) */
-        /*  enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(width: 2, color: Colors.black)) */
-        hintText: "Bana soru sor",
-        hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16));
+        hintText: "Bana soru sor", hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16));
   }
 
   Future<void> sendMessageFCT(CoffeGptViewModel value) async {
@@ -145,7 +194,7 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: TextWidget(
-            label: "You cant send multiple messages at a time",
+            label: "Aynı anda birden fazla mesaj gönderemezsin !",
           ),
           backgroundColor: Colors.red,
         ),
@@ -156,7 +205,7 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: TextWidget(
-            label: "Please type a message",
+            label: "Lütfen bir mesaj yazar mısın ?",
           ),
           backgroundColor: Colors.red,
         ),
@@ -192,6 +241,6 @@ class _ChatScreenViewState extends State<ChatScreenView> with SingleTickerProvid
 
   void scrollListToEnd() {
     scrollController.animateTo(scrollController.position.maxScrollExtent,
-        duration: const Duration(seconds: 2), curve: Curves.easeOut);
+        duration: const Duration(seconds: 1), curve: Curves.easeOut);
   }
 }
