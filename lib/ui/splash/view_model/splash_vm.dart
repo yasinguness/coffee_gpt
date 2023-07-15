@@ -1,3 +1,3 @@
 import '../../base/base_model.dart';
 
-class SplashViewModel extends BaseModel {}
+class SplashViewModel extends BaseViewModel {}

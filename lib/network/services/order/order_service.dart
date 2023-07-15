@@ -1,11 +1,16 @@
-import 'dart:io';
+import 'package:coffe_app/common/constants/enums/http_request_enum.dart';
 
-import '../../../common/constants/service_const.dart';
 import '../../../common/service/base_service.dart';
 import '../../models/order/order.dart';
 
 class OrderService extends BaseService {
-  Future<List<OrderModel>?> fetchOrders() async {
+  Future fetchOrders() async {
+    final response = await coreDio!
+        .send<List<OrderModel>, OrderModel>("/order/get-order", type: HttpTypes.GET, parseModel: OrderModel());
+    return response.data;
+  }
+
+/*   Future<List<OrderModel>?> fetchOrders() async {
     final response = await dio.get('$BASE_URL/order/get-order');
 
     if (response.statusCode == HttpStatus.ok) {
@@ -15,9 +20,9 @@ class OrderService extends BaseService {
       }
     }
     return null;
-  }
+  } */
 
-  Future<bool?> postOrder(OrderModel model) async {
+  /*  Future<bool?> postOrder(OrderModel model) async {
     final postOrders = {
       "customer": model.customer!.id,
       "products": model.products!
@@ -41,9 +46,37 @@ class OrderService extends BaseService {
       return false;
     }
     return null;
+  } */
+
+  Future postOrder(OrderModel model) async {
+    final postOrders = {
+      "customer": model.customer!.id,
+      "products": model.products!
+          .map((product) => {
+                "product": product.product!.id,
+                "amount": product.amount,
+                "selectedSize": product.selectedSize,
+                "currentPrice": product.currentPrice
+              })
+          .toList(),
+    };
+    final response = await coreDio!
+        .send<bool, OrderModel>("/order/create", type: HttpTypes.POST, parseModel: OrderModel(), data: postOrders);
+
+    if (response.data == true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  Future<OrderModel?> getOrderById(String id) async {
+  Future getOrderById(String id) async {
+    final response =
+        await coreDio!.send<OrderModel, OrderModel>("/order/$id", type: HttpTypes.GET, parseModel: OrderModel());
+    return response.data;
+  }
+
+  /*  Future<OrderModel?> getOrderById(String id) async {
     try {
       final response = await dio.get("$BASE_URL/order/$id");
       if (response.statusCode == HttpStatus.ok) {
@@ -55,5 +88,5 @@ class OrderService extends BaseService {
       print("Servis hata");
     }
     return null;
-  }
+  } */
 }

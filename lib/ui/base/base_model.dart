@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-class BaseModel extends ChangeNotifier {
+class BaseViewModel extends ChangeNotifier {
   late BuildContext context; // BuildContext özelliği
 
   void setContext(BuildContext context) {

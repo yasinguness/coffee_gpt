@@ -3,10 +3,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
-import '../../../common/constants/assets_const.dart';
+import '../../../common/constants/app_const/assets_const.dart';
+import '../../../common/constants/app_const/text_const.dart';
 import '../../../common/constants/coffee_colors.dart';
 import '../../../common/constants/coffee_padding.dart';
-import '../../../common/constants/text_const.dart';
 import '../../../common/widgets/app_bar_widget.dart';
 import '../../../router/app_router.dart';
 

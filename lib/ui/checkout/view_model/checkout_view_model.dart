@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:coffe_app/common/provider/basket_provider.dart';
-import 'package:coffe_app/common/provider/coffe_provider.dart';
-import 'package:coffe_app/common/provider/customer_provider.dart';
-import 'package:coffe_app/network/models/order/order.dart';
-import 'package:coffe_app/network/services/order/order_service.dart';
-import 'package:coffe_app/ui/base/base_model.dart';
+import '../../../common/provider/basket_provider.dart';
+import '../../../common/provider/coffe_provider.dart';
+import '../../../common/provider/customer_provider.dart';
+import '../../../network/models/order/order.dart';
+import '../../../network/services/order/order_service.dart';
+import '../../base/base_model.dart';
 
-class CheckoutViewModel extends BaseModel {
+class CheckoutViewModel extends BaseViewModel {
   OrderService? orderServices;
   OrderModel? model;
 

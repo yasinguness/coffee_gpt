@@ -1,9 +1,11 @@
+import 'package:coffe_app/network/base/base_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'product.g.dart';
 
 @JsonSerializable()
-class ProductModel {
+class ProductModel with BaseModel<ProductModel> {
+  @JsonKey(name: "_id")
   String? id;
   String? name;
   String? description;
@@ -26,6 +28,7 @@ class ProductModel {
       this.isSweet});
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => _$ProductModelFromJson(json);
+  @override
   Map<dynamic, dynamic> toJson() => _$ProductModelToJson(this);
 
   ProductModel copyWith(
@@ -46,5 +49,11 @@ class ProductModel {
       size: size ?? this.size,
       isSweet: isSweet ?? this.isSweet,
     );
+  }
+
+  @override
+  ProductModel fromJson(Map<String, Object> json) {
+    // TODO: implement fromJson
+    return _$ProductModelFromJson(json);
   }
 }

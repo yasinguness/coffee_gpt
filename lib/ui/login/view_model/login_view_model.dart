@@ -3,7 +3,7 @@ import 'package:coffe_app/network/services/customer/customer_service.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 import 'package:flutter/material.dart';
 
-class LoginViewModel extends BaseModel {
+class LoginViewModel extends BaseViewModel {
   CustomerService? customerService;
   CustomerProvider? customerProvider;
   LoginViewModel({this.customerService, this.customerProvider});

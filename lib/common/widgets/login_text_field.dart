@@ -6,6 +6,7 @@ import '../constants/coffee_padding.dart';
 
 class LoginTextField extends StatelessWidget {
   final LoginViewModel model;
+  final TextEditingController cntrl;
   final String hintText;
   final TextStyle? labelStyle;
   const LoginTextField({
@@ -13,6 +14,7 @@ class LoginTextField extends StatelessWidget {
     required this.model,
     required this.hintText,
     this.labelStyle,
+    required this.cntrl,
   });
 
   @override
@@ -27,7 +29,7 @@ class LoginTextField extends StatelessWidget {
               BoxShadow(blurRadius: 10),
             ]),
         child: TextField(
-            controller: model.controller,
+            controller: cntrl,
             decoration: InputDecoration(
                 enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
                 focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),

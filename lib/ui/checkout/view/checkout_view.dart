@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import '../../../common/constants/app_const/text_const.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/constants/coffee_colors.dart';
 import '../../../common/constants/coffee_padding.dart';
-import '../../../common/constants/text_const.dart';
 import '../../../common/provider/basket_provider.dart';
 import '../../../common/provider/coffe_provider.dart';
 import '../../../common/provider/customer_provider.dart';

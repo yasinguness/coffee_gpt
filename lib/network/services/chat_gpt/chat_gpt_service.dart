@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../common/constants/chat_api_const.dart';
+import '../../../common/constants/app_const/chat_api_const.dart';
 import '../../models/gpt/chat_model.dart';
 import '../../models/gpt/models_model.dart';
 

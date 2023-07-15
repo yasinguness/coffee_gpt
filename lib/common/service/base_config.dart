@@ -1,11 +1,12 @@
-import 'package:coffe_app/common/constants/service_const.dart';
 import 'package:dio/dio.dart';
+
+import '../constants/app_const/service_const.dart';
 
 class BaseConfig {
   late Dio dio;
 
   BaseConfig() {
-    BaseOptions options = BaseOptions(baseUrl: BASE_URL);
+    BaseOptions options = BaseOptions(baseUrl: Coffee_BASE_URL);
     dio = Dio(options);
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {

@@ -4,7 +4,7 @@ import '../../../network/models/order_product/order_product.dart';
 import '../../../network/services/product/product_services.dart';
 import '../../base/base_model.dart';
 
-class CoffeeDetailViewModel extends BaseModel {
+class CoffeeDetailViewModel extends BaseViewModel {
   ProductServices? coffeeServices;
   OrderProductModel? orderProductModel;
 

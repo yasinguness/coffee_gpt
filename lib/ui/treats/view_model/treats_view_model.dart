@@ -6,7 +6,7 @@ import 'package:coffe_app/network/models/product/product.dart';
 import 'package:coffe_app/network/services/product/product_services.dart';
 import 'package:coffe_app/ui/base/base_model.dart';
 
-class TreatsViewModel extends BaseModel {
+class TreatsViewModel extends BaseViewModel {
   final ProductServices? productServices;
   BasketProvider? basketProvider;
   OrderProductModel? sweet;

@@ -2,7 +2,7 @@ import '../../../network/models/product/product.dart';
 import '../../../network/services/product/product_services.dart';
 import '../../base/base_model.dart';
 
-class CoffeListViewModel extends BaseModel {
+class CoffeListViewModel extends BaseViewModel {
   final ProductServices? coffeeServices;
 
   CoffeListViewModel({this.coffeeServices});

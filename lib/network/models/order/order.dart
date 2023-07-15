@@ -1,14 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/foundation.dart';
-import 'package:json_annotation/json_annotation.dart';
-
+import 'package:coffe_app/network/base/base_model.dart';
 import 'package:coffe_app/network/models/customer/customer.dart';
 import 'package:coffe_app/network/models/order_product/order_product.dart';
+import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'order.g.dart';
 
 @JsonSerializable()
-class OrderModel {
+class OrderModel with BaseModel<OrderModel> {
+  @JsonKey(name: "_id")
   String? id;
   CustomerModel? customer;
   List<OrderProductModel>? products;
@@ -19,6 +20,7 @@ class OrderModel {
   OrderModel({this.id, this.customer, this.products, this.status, this.createdAt, this.updatedAt, this.totalPrice});
 
   factory OrderModel.fromJson(Map<String, dynamic> json) => _$OrderModelFromJson(json);
+  @override
   Map<dynamic, dynamic> toJson() => _$OrderModelToJson(this);
 
   @override
@@ -43,5 +45,11 @@ class OrderModel {
         totalPrice.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode;
+  }
+
+  @override
+  OrderModel fromJson(Map<String, Object> json) {
+    // TODO: implement fromJson
+    return _$OrderModelFromJson(json);
   }
 }

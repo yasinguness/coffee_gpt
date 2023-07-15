@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import '../../../common/constants/app_const/assets_const.dart';
+import '../../../common/constants/app_const/text_const.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/constants/assets_const.dart';
 import '../../../common/constants/coffee_colors.dart';
-import '../../../common/constants/text_const.dart';
 import '../../../common/provider/customer_provider.dart';
 import '../../../common/widgets/login_text_field.dart';
 import '../../../locator.dart';
@@ -56,8 +56,12 @@ class LoginView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LoginTextField(hintText: TextConst.instance.loginNameTextField, model: model),
-          LoginTextField(model: model, hintText: TextConst.instance.loginTableNumberTextField),
+          LoginTextField(hintText: TextConst.instance.loginNameTextField, model: model, cntrl: model.controller),
+          LoginTextField(
+            model: model,
+            hintText: TextConst.instance.loginTableNumberTextField,
+            cntrl: model.qrcontroller,
+          ),
         ],
       ),
     );
