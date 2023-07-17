@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rive/rive.dart';
 
-import '../../../common/constants/coffee_colors.dart';
+import '../../../common/util/coffee_colors.dart';
 import '../../../common/widgets/app_bar_widget.dart';
 import '../../../common/widgets/chat_bubble_widget/message_bubble.dart';
 import '../../../common/widgets/text_widget.dart';

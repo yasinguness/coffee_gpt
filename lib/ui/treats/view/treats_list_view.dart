@@ -1,17 +1,16 @@
 import 'package:auto_route/auto_route.dart';
-import '../../../common/constants/coffee_colors.dart';
-import '../../../common/constants/scrool.dart';
-import '../../../common/provider/basket_provider.dart';
-import '../../../locator.dart';
-import '../../../network/models/order_product/order_product.dart';
-import '../../../network/models/product/product.dart';
-import '../../../network/services/product/product_services.dart';
-import '../../../router/app_router.dart';
-import '../../base/base_view.dart';
-import '../view_model/treats_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
+
+import '../../../common/util/coffee_colors.dart';
+import '../../../common/util/scrool.dart';
+import '../../../common/provider/basket_provider.dart';
+import '../../../network/models/order_product/order_product.dart';
+import '../../../network/models/product/product.dart';
+import '../../../router/app_router.dart';
+import '../../base/base_view.dart';
+import '../view_model/treats_view_model.dart';
 
 class TreatsListView extends StatefulWidget {
   final ProductModel? productModel;
@@ -100,10 +99,7 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
                 ],
               ),
         onModelReady: (p0) => p0.fetchTreats(),
-        model: TreatsViewModel(
-            productServices: locator<ProductServices>(),
-            basketProvider: Provider.of<BasketProvider>(context),
-            sweet: OrderProductModel()));
+        model: TreatsViewModel(basketProvider: Provider.of<BasketProvider>(context), sweet: OrderProductModel()));
   }
 
   Align _treatsPrice(BuildContext context, TreatsViewModel treat) {
@@ -195,9 +191,9 @@ class _TreatsListViewState extends State<TreatsListView> with RouteAware {
         bottom: size.height * 0.25,
         child: ElevatedButton(
           onPressed: () {
-            model.sweet!.product = model.treats![model.index!];
-            model.sweet!.currentPrice = model.treats![model.index!].price;
-            model.sweet!.selectedSize = "M";
+            model.sweet.product = model.treats![model.index!];
+            model.sweet.currentPrice = model.treats![model.index!].price;
+            model.sweet.selectedSize = "M";
             model.addToBasket();
             context.router.push(const CheckoutRoute());
           },

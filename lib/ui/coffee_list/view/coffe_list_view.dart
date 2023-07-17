@@ -2,12 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/coffee_colors.dart';
-import '../../../common/constants/scrool.dart';
+import '../../../common/util/coffee_colors.dart';
+import '../../../common/util/scrool.dart';
 import '../../../common/widgets/app_bar_widget.dart';
 import '../../../common/widgets/background_decoration.dart';
-import '../../../locator.dart';
-import '../../../network/services/product/product_services.dart';
 import '../../../router/app_router.dart';
 import '../../base/base_view.dart';
 import '../view_model/coffee_list_view_model.dart';
@@ -67,7 +65,7 @@ class _CoffeeListViewState extends State<CoffeeListView> with RouteAware, Ticker
     var size = MediaQuery.of(context).size;
     return BaseView<CoffeListViewModel>(
       onModelReady: (p0) => p0.fetchCoffees(),
-      model: CoffeListViewModel(coffeeServices: locator<ProductServices>()),
+      model: CoffeListViewModel(),
       builder: (context, value, widget) =>
           value.busy ? const Center(child: CircularProgressIndicator()) : _scaffold(size, value, context),
     );

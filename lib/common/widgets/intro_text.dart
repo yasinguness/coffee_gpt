@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants/coffee_colors.dart';
+import '../util/coffee_colors.dart';
 
 class IntroText extends StatelessWidget {
   final String text;

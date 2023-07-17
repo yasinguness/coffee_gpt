@@ -2,17 +2,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/constants/coffee_colors.dart';
-import '../../../common/constants/coffee_padding.dart';
+import '../../../common/util/coffee_colors.dart';
+import '../../../common/util/coffee_padding.dart';
 import '../../../common/constants/text_const.dart';
 import '../../../common/provider/basket_provider.dart';
 import '../../../common/provider/coffe_provider.dart';
 import '../../../common/provider/customer_provider.dart';
 import '../../../common/widgets/app_bar_widget.dart';
 import '../../../common/widgets/background_decoration.dart';
-import '../../../locator.dart';
 import '../../../network/models/order/order.dart';
-import '../../../network/services/order/order_service.dart';
 import '../../../router/app_router.dart';
 import '../../base/base_view.dart';
 import '../view_model/checkout_view_model.dart';
@@ -39,7 +37,6 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       },
       model: CheckoutViewModel(
         model: OrderModel(),
-        orderServices: locator<OrderService>(),
         basketProvider: Provider.of<BasketProvider>(context),
         coffeeProvider: Provider.of<CoffeeProvider>(context),
         customerProvider: Provider.of<CustomerProvider>(context),
@@ -55,7 +52,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         children: [
           _buildBackground(),
           Padding(
-            padding: CoffeePading.instance.veryHigh / 2,
+            padding: CoffeePadding.instance.veryHigh / 2,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -90,7 +87,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
           ],
         );
       },
-      itemCount: value.basketProvider!.basketProducts?.length,
+      itemCount: value.basketProvider.basketProducts?.length,
     );
   }
 
@@ -118,7 +115,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (value.basketProvider!.basketProducts?[index].product!.isSweet == "sweet") ...[
+          if (value.basketProvider.basketProducts?[index].product!.isSweet == "sweet") ...[
             const Spacer(flex: 1),
             _coffePrice(value, context, index)
           ] else ...[
@@ -151,7 +148,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   GestureDetector _decreaseContainer(CheckoutViewModel model, int index) {
     return GestureDetector(
-      onTap: () => model.basketProvider!.decreaseQuantity(index),
+      onTap: () => model.basketProvider.decreaseQuantity(index),
       child: Container(
         decoration: BoxDecoration(
             color: CoffeeColors.kTitleColor,
@@ -167,9 +164,9 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   Padding _quantityText(CheckoutViewModel model, int index) {
     return Padding(
-      padding: CoffeePading.instance.mediumHorizontalAndVertical,
+      padding: CoffeePadding.instance.mediumHorizontalAndVertical,
       child: Text(
-        model.basketProvider!.quantity![index].toString(),
+        model.basketProvider.quantity![index].toString(),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
@@ -177,9 +174,9 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   GestureDetector _increaseContainer(CheckoutViewModel model, int index) {
     return GestureDetector(
-      onTap: () => model.basketProvider!.increaseQuantity(index),
+      onTap: () => model.basketProvider.increaseQuantity(index),
       child: Container(
-        margin: CoffeePading.instance.lowHorizontal,
+        margin: CoffeePadding.instance.lowHorizontal,
         decoration: BoxDecoration(
             color: CoffeeColors.kTitleColor,
             borderRadius: BorderRadius.circular(8),
@@ -208,7 +205,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
         child: Hero(
             tag: "nameCoffee$index", //CoffeImageTag
             child: Image.network(
-              "${model.basketProvider!.basketProducts![index].product!.image}",
+              "${model.basketProvider.basketProducts![index].product!.image}",
               fit: BoxFit.contain,
             )),
       ),
@@ -219,7 +216,7 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     return Expanded(
       flex: 1,
       child: Text(
-        (model.basketProvider!.basketProducts![index].currentPrice).toString(),
+        (model.basketProvider.basketProducts![index].currentPrice).toString(),
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
@@ -233,9 +230,9 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
     return Expanded(
       flex: 1,
       child: Text(
-        model.basketProvider!.basketProducts![index].selectedSize == null
-            ? model.basketProvider!.basketProducts![index].selectedSize = 'M'
-            : model.basketProvider!.basketProducts![index].selectedSize.toString(),
+        model.basketProvider.basketProducts![index].selectedSize == null
+            ? model.basketProvider.basketProducts![index].selectedSize = 'M'
+            : model.basketProvider.basketProducts![index].selectedSize.toString(),
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
             fontSize: 16,
             letterSpacing: 1,
@@ -247,9 +244,9 @@ class _CheckoutViewState extends State<CheckoutView> with RouteAware {
 
   Tooltip _coffeName(BuildContext context, CheckoutViewModel model, int index) {
     return Tooltip(
-      message: model.basketProvider!.basketProducts![index].product!.name.toString(),
+      message: model.basketProvider.basketProducts![index].product!.name.toString(),
       child: Text(
-        model.basketProvider!.basketProducts![index].product!.name.toString(),
+        model.basketProvider.basketProducts![index].product!.name.toString(),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: Theme.of(context)

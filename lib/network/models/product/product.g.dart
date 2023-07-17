@@ -13,12 +13,17 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
       image: json['image'] as String?,
       price: (json['price'] as num?)?.toDouble(),
       size: json['size'] as String?,
-      createdAt: json['createdAt'] == null ? null : DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] == null ? null : DateTime.parse(json['updatedAt'] as String),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
       isSweet: json['isSweet'] as String?,
     );
 
-Map<String, dynamic> _$ProductModelToJson(ProductModel instance) => <String, dynamic>{
+Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>
+    <String, dynamic>{
       '_id': instance.id,
       'name': instance.name,
       'description': instance.description,

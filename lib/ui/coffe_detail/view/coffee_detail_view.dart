@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/constants/coffee_colors.dart';
-import '../../../common/constants/coffee_padding.dart';
+import '../../../common/util/coffee_colors.dart';
+import '../../../common/util/coffee_padding.dart';
 import '../../../common/constants/text_const.dart';
 import '../../../common/provider/basket_provider.dart';
 import '../../../common/provider/coffe_provider.dart';
 import '../../../common/widgets/app_bar_widget.dart';
 import '../../../common/widgets/background_decoration.dart';
-import '../../../locator.dart';
 import '../../../network/models/order_product/order_product.dart';
 import '../../../network/models/product/product.dart';
-import '../../../network/services/product/product_services.dart';
 import '../../../router/app_router.dart';
 import '../../base/base_view.dart';
 import '../view_model/coffee_detail_model.dart';
@@ -40,7 +38,6 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
             : _scaffold(context, value, size),
         model: CoffeeDetailViewModel(
             orderProductModel: OrderProductModel(),
-            coffeeServices: locator<ProductServices>(),
             basketProvider: Provider.of<BasketProvider>(context),
             coffeeProvider: Provider.of<CoffeeProvider>(context)));
   }
@@ -58,7 +55,7 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
 
   Padding _coffeBody(BuildContext context, CoffeeDetailViewModel value, Size size) {
     return Padding(
-        padding: CoffeePading.instance.veryHigh,
+        padding: CoffeePadding.instance.veryHigh,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -244,9 +241,9 @@ class _CoffeeDetailViewState extends State<CoffeeDetailView> with RouteAware {
                   model.orderProductModel!.selectedSize = sizeCoffe;
                 },
                 child: Padding(
-                  padding: CoffeePading.instance.mediumJustRight,
+                  padding: CoffeePadding.instance.mediumJustRight,
                   child: Container(
-                    padding: CoffeePading.instance.mediumHorizontalLowVertical,
+                    padding: CoffeePadding.instance.mediumHorizontalLowVertical,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
                       color: widget.coffee?.size == sizeCoffe ? CoffeeColors.kTitleColor : Colors.transparent,

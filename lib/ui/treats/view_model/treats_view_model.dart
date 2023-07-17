@@ -1,27 +1,35 @@
 import 'dart:async';
 
-import 'package:coffe_app/common/provider/basket_provider.dart';
-import 'package:coffe_app/network/models/order_product/order_product.dart';
-import 'package:coffe_app/network/models/product/product.dart';
-import 'package:coffe_app/network/services/product/product_services.dart';
-import 'package:coffe_app/ui/base/base_model.dart';
+import 'package:coffe_app/network/models/response_model/response_model.dart';
+
+import '../../../common/provider/basket_provider.dart';
+import '../../../network/models/order_product/order_product.dart';
+import '../../../network/models/product/product.dart';
+import '../../base/base_model.dart';
+import '../repository/treat_repository.dart';
 
 class TreatsViewModel extends BaseModel {
-  final ProductServices? productServices;
-  BasketProvider? basketProvider;
-  OrderProductModel? sweet;
-  TreatsViewModel({this.sweet, this.productServices, this.basketProvider});
+  final TreatRepository _repo = TreatRepository();
+  late final BasketProvider? basketProvider;
+
+  late OrderProductModel sweet;
+  TreatsViewModel({required this.sweet, this.basketProvider});
   int? index = 0;
 
   List<ProductModel>? treats;
 
   Future fetchTreats() async {
     setBusy(true);
-    treats = await productServices!.getSweet();
+    final ApiResponse response = await _repo.fetchTreat();
+    if (response.data == null) {
+      treats = [];
+    } else if (response.statusCode == 200) {
+      treats = response.data;
+    }
     setBusy(false);
   }
 
   void addToBasket() {
-    basketProvider?.addProductToBasket(sweet!, 1);
+    basketProvider?.addProductToBasket(sweet, 1);
   }
 }

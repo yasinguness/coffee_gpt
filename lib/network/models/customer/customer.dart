@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -7,14 +8,20 @@ part 'customer.g.dart';
 
 @JsonSerializable()
 class CustomerModel extends Equatable {
-  final String? id;
-  final String? name;
-  final String? qrNo;
-  final List<OrderModel>? orders;
-  const CustomerModel({this.id, this.name, this.qrNo, this.orders});
+  @JsonKey(name: "_id")
+  String? id;
+  String? name;
+  String? qrNo;
+  List<OrderModel>? orders;
+  CustomerModel({
+    this.id,
+    this.name,
+    this.qrNo,
+    this.orders,
+  });
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) => _$CustomerModelFromJson(json);
-  Map<dynamic, dynamic> toJson() => _$CustomerModelToJson(this);
+  Map<String, dynamic> toJson() => _$CustomerModelToJson(this);
 
   @override
   List<Object?> get props => [id, name, qrNo, orders];
