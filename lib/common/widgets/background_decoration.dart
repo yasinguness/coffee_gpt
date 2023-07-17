@@ -1,4 +1,4 @@
-import 'package:coffe_app/common/constants/coffee_colors.dart';
+import 'package:coffe_app/common/util/coffee_colors.dart';
 import 'package:flutter/material.dart';
 
 class BackgroundDecoration extends StatelessWidget {

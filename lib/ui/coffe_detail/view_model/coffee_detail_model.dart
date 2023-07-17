@@ -1,17 +1,15 @@
 import '../../../common/provider/basket_provider.dart';
 import '../../../common/provider/coffe_provider.dart';
 import '../../../network/models/order_product/order_product.dart';
-import '../../../network/services/product/product_services.dart';
 import '../../base/base_model.dart';
 
 class CoffeeDetailViewModel extends BaseModel {
-  ProductServices? coffeeServices;
   OrderProductModel? orderProductModel;
 
   BasketProvider? basketProvider;
   CoffeeProvider? coffeeProvider;
 
-  CoffeeDetailViewModel({this.orderProductModel, this.coffeeServices, this.basketProvider, this.coffeeProvider});
+  CoffeeDetailViewModel({this.orderProductModel, this.basketProvider, this.coffeeProvider});
 
   void incrementCounter() {
     coffeeProvider!.incrementCounter();

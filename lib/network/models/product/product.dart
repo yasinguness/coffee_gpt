@@ -4,6 +4,7 @@ part 'product.g.dart';
 
 @JsonSerializable()
 class ProductModel {
+  @JsonKey(name: "_id")
   String? id;
   String? name;
   String? description;
@@ -26,7 +27,7 @@ class ProductModel {
       this.isSweet});
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => _$ProductModelFromJson(json);
-  Map<dynamic, dynamic> toJson() => _$ProductModelToJson(this);
+  Map<String, dynamic> toJson() => _$ProductModelToJson(this);
 
   ProductModel copyWith(
       {String? id,

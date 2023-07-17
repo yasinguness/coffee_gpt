@@ -1,11 +1,13 @@
+import 'package:coffe_app/network/models/response_model/response_model.dart';
+
 import '../../../network/models/product/product.dart';
-import '../../../network/services/product/product_services.dart';
 import '../../base/base_model.dart';
+import '../repository/coffee_list_repository.dart';
 
 class CoffeListViewModel extends BaseModel {
-  final ProductServices? coffeeServices;
+  final CoffeeListRepository _repo = CoffeeListRepository();
 
-  CoffeListViewModel({this.coffeeServices});
+  CoffeListViewModel();
 
   int _index = 0;
   int? get index => _index;
@@ -18,7 +20,14 @@ class CoffeListViewModel extends BaseModel {
 
   Future fetchCoffees() async {
     setBusy(true);
-    coffees = await coffeeServices!.getCoffee();
+    final ApiResponse response = await _repo.fetchCoffees();
+
+    if (response.data == null) {
+      coffees = [];
+    } else if (response.statusCode == 200) {
+      coffees = response.data;
+    }
+
     setBusy(false);
   }
 }

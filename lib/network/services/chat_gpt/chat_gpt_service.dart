@@ -10,10 +10,11 @@ import '../../models/gpt/chat_model.dart';
 import '../../models/gpt/models_model.dart';
 
 class ChatGptServices {
+  final String _url = ChatGptApi.instance.BASE_URL;
   Future<List<ModelsModel>> getModels() async {
     try {
       var response = await http.get(
-        Uri.parse("$BASE_URL/models"),
+        Uri.parse("$_url/models"),
         headers: {'Authorization': 'Bearer ${dotenv.env['BEARER_KEY']}'},
       );
 
@@ -35,7 +36,7 @@ class ChatGptServices {
   Future<List<ChatModel>> sendMessage({required String message}) async {
     try {
       var response = await http.post(
-        Uri.parse("$BASE_URL/completions"),
+        Uri.parse("$_url/completions"),
         headers: {'Authorization': 'Bearer ${dotenv.env['BEARER_KEY']}', "Content-Type": "application/json"},
         body: jsonEncode(
           {"model": "text-davinci-003", "prompt": message, "max_tokens": 300},
@@ -67,7 +68,7 @@ class ChatGptServices {
   Future<List<ChatModel>> sendMessageGPT({required String message}) async {
     try {
       var response = await http.post(
-        Uri.parse("$BASE_URL/chat/completions"),
+        Uri.parse("$_url/chat/completions"),
         headers: {'Authorization': 'Bearer ${dotenv.env['BEARER_KEY']}', "Content-Type": "application/json"},
         body: jsonEncode(
           {

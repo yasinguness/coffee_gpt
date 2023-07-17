@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants/coffee_colors.dart';
+import '../util/coffee_colors.dart';
 
 part "../themes/text_theme.dart";
 

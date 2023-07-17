@@ -9,6 +9,7 @@ part 'order.g.dart';
 
 @JsonSerializable()
 class OrderModel {
+  @JsonKey(name: "_id")
   String? id;
   CustomerModel? customer;
   List<OrderProductModel>? products;
@@ -19,7 +20,7 @@ class OrderModel {
   OrderModel({this.id, this.customer, this.products, this.status, this.createdAt, this.updatedAt, this.totalPrice});
 
   factory OrderModel.fromJson(Map<String, dynamic> json) => _$OrderModelFromJson(json);
-  Map<dynamic, dynamic> toJson() => _$OrderModelToJson(this);
+  Map<String, dynamic> toJson() => _$OrderModelToJson(this);
 
   @override
   bool operator ==(covariant OrderModel other) {

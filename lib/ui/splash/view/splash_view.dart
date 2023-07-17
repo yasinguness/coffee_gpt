@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/coffee_colors.dart';
+import '../../../common/util/coffee_colors.dart';
 import '../../../common/widgets/app_bar_widget.dart';
 import '../../../common/widgets/intro_text.dart';
 import '../../../router/app_router.dart';

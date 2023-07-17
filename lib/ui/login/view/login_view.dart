@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/constants/assets_const.dart';
-import '../../../common/constants/coffee_colors.dart';
+import '../../../common/util/coffee_colors.dart';
 import '../../../common/constants/text_const.dart';
 import '../../../common/provider/customer_provider.dart';
 import '../../../common/widgets/login_text_field.dart';
-import '../../../locator.dart';
-import '../../../network/services/customer/customer_service.dart';
+import '../../../network/models/customer/customer.dart';
 import '../../../router/app_router.dart';
 import '../../base/base_view.dart';
 import '../view_model/login_view_model.dart';
@@ -23,8 +22,8 @@ class LoginView extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     return BaseView<LoginViewModel>(
       model: LoginViewModel(
-        customerService: locator<CustomerService>(),
         customerProvider: Provider.of<CustomerProvider>(context),
+        customerModel: CustomerModel(),
       ),
       builder: (context, value, widget) => Scaffold(
         body: SizedBox(
@@ -56,8 +55,8 @@ class LoginView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LoginTextField(hintText: TextConst.instance.loginNameTextField, model: model),
-          LoginTextField(model: model, hintText: TextConst.instance.loginTableNumberTextField),
+          LoginTextField(hintText: TextConst.instance.loginNameTextField, controller: model.controller),
+          LoginTextField(controller: model.qrcontroller, hintText: TextConst.instance.loginTableNumberTextField),
         ],
       ),
     );

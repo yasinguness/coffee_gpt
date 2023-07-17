@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 
-class CoffeePading {
-  CoffeePading._init();
-  static CoffeePading? _instance;
-  static CoffeePading get instance {
-    _instance ??= CoffeePading._init();
+class CoffeePadding {
+  CoffeePadding._init();
+  static CoffeePadding? _instance;
+  static CoffeePadding get instance {
+    _instance ??= CoffeePadding._init();
     return _instance!;
   }
 

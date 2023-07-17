@@ -49,7 +49,6 @@ class _BaseViewState<T extends ChangeNotifier> extends State<BaseView<T>> with W
     if (widget.onDispose != null) {
       widget.onDispose!.call();
     }
-    //widget.model.dispose(); //TODO: Açtığım zaman hata veriyor
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

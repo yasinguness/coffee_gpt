@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/constants/coffee_colors.dart';
-import '../../../common/constants/coffee_padding.dart';
+import '../../../common/util/coffee_colors.dart';
+import '../../../common/util/coffee_padding.dart';
 import '../../../common/constants/text_const.dart';
 import '../../../common/widgets/app_bar_widget.dart';
 import '../../../common/widgets/background_decoration.dart';
@@ -36,7 +36,7 @@ class _SweetTreatsViewState extends State<SweetTreatsView> {
           Align(
             alignment: Alignment.topRight,
             child: Padding(
-              padding: CoffeePading.instance.high,
+              padding: CoffeePadding.instance.high,
               child: SizedBox(
                 height: size.height * 0.25,
                 child: Column(
@@ -86,7 +86,7 @@ class _SweetTreatsViewState extends State<SweetTreatsView> {
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,
-          padding: CoffeePading.instance.highHorizontalHighVertical,
+          padding: CoffeePadding.instance.highHorizontalHighVertical,
           alignment: Alignment.centerLeft,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),

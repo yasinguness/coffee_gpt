@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
 import '../../../common/constants/assets_const.dart';
-import '../../../common/constants/coffee_colors.dart';
-import '../../../common/constants/coffee_padding.dart';
+import '../../../common/util/coffee_colors.dart';
+import '../../../common/util/coffee_padding.dart';
 import '../../../common/constants/text_const.dart';
 import '../../../common/widgets/app_bar_widget.dart';
 import '../../../router/app_router.dart';
@@ -47,7 +47,7 @@ class _EntryViewState extends State<EntryView> {
     return Expanded(
         flex: 5,
         child: Padding(
-          padding: CoffeePading.instance.medium,
+          padding: CoffeePadding.instance.medium,
           child: Card(
             elevation: 16,
             color: const Color(0xFFECDAC2),
@@ -210,7 +210,7 @@ class _EntryViewState extends State<EntryView> {
       style: ElevatedButton.styleFrom(
           backgroundColor: CoffeeColors.kTitleColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CoffeePading.instance.mediumValue),
+            borderRadius: BorderRadius.circular(CoffeePadding.instance.mediumValue),
           ),
           textStyle: Theme.of(context)
               .textTheme

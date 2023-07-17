@@ -1,59 +1,21 @@
-import 'dart:io';
+import 'package:coffe_app/network/api.dart';
+import 'package:coffe_app/network/models/order/order.dart';
+import 'package:coffe_app/network/models/response_model/response_model.dart';
+import 'package:dio/dio.dart';
+import 'package:retrofit/http.dart';
 
-import '../../../common/constants/service_const.dart';
-import '../../../common/service/base_service.dart';
-import '../../models/order/order.dart';
+part 'order_service.g.dart';
 
-class OrderService extends BaseService {
-  Future<List<OrderModel>?> fetchOrders() async {
-    final response = await dio.get('$BASE_URL/order/get-order');
+@RestApi()
+abstract class OrderService {
+  factory OrderService({Dio? dio}) => _OrderService(dio ?? DioApi.instance.createDio());
 
-    if (response.statusCode == HttpStatus.ok) {
-      final datas = response.data['data'];
-      if (datas is List) {
-        return datas.map((e) => OrderModel.fromJson(e)).toList();
-      }
-    }
-    return null;
-  }
+  @GET("/order/get-order")
+  Future<ApiResponse<List<OrderModel>>> fetchOrders();
 
-  Future<bool?> postOrder(OrderModel model) async {
-    final postOrders = {
-      "customer": model.customer!.id,
-      "products": model.products!
-          .map((product) => {
-                "product": product.product!.id,
-                "amount": product.amount,
-                "selectedSize": product.selectedSize,
-                "currentPrice": product.currentPrice
-              })
-          .toList(),
-    };
-    try {
-      final response = await dio.post(
-        '$BASE_URL/order/create',
-        data: postOrders, /*  options: Options(headers: {'Content-Type': 'application/json'}) */
-      );
-      if (response.statusCode == HttpStatus.created) {
-        return true;
-      }
-    } catch (e) {
-      return false;
-    }
-    return null;
-  }
+  @POST("order/create")
+  Future<ApiResponse<bool>> postOrder(@Body() OrderModel model);
 
-  Future<OrderModel?> getOrderById(String id) async {
-    try {
-      final response = await dio.get("$BASE_URL/order/$id");
-      if (response.statusCode == HttpStatus.ok) {
-        final data = response.data['data'][0];
-
-        return OrderModel.fromJson(data);
-      }
-    } catch (e) {
-      print("Servis hata");
-    }
-    return null;
-  }
+  @GET("order/{id}")
+  Future<ApiResponse<OrderModel>> getOrderById(@Path("id") id);
 }
